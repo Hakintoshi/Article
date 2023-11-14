@@ -1,0 +1,52 @@
+version: "3.9"
+x-base:
+  &base
+  networks:
+    - docker_net
+  restart: always
+services:
+  postgres:
+    << : *base
+    container_name: postgres_test
+    restart: always
+    image: postgres:14
+    env_file:
+      - src/.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+        - "127.0.0.1:5432:5432"
+  backend:
+    << : *base
+    expose:
+      - 3000
+    volumes:
+      - ./src/backend:/app
+    env_file:
+      - src/.env
+    build:
+      context: ./src/backend
+    ports:
+      - "127.0.0.1:3001:3001"
+    depends_on:
+      - postgres
+    restart: always
+  nginx:
+    << : *base
+    build:
+      context: ./src/containers/nginx
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:3000:3000"
+#      "нужно указать порты 1 серсвиса в  вторая строчка нж второго сервиса нж"
+    depends_on:
+      - backend
+    volumes:
+      - /etc/localtime:/etc/localtime/:ro
+      - ./src/logs/nginx/:/var/log/nginx
+      - ./src/frontend:/var/www/html
+    restart: always
+networks:
+  docker_net:
+volumes:
+  postgres:
