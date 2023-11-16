@@ -9,7 +9,8 @@ services:
     << : *base
     container_name: postgres_test
     restart: always
-    image: postgres:14
+    build:
+      context: ./containers/postgres
     env_file:
       - src/.env
     volumes:
@@ -34,7 +35,7 @@ services:
   nginx:
     << : *base
     build:
-      context: ./src/containers/nginx
+      context: containers/nginx
     ports:
       - "127.0.0.1:80:80"
       - "127.0.0.1:3000:3000"
