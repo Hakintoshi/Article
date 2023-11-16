@@ -28,12 +28,9 @@ install-modules-webserver: ## webserver install modules
 
 build: ## Сборка docker контейнеров приложения
 	$(docker_compose_bin) build
-#	${docker_bin} compose build
 
 up: ## Сборка и поднятие docker контейнеров при помощи docker-compose
 	$(docker_compose_bin) -f docker-compose.yml up -d --remove-orphans
-	#${docker_bin} compose up -d --remove-orphans
 
 down: ## Удаление docker контейнеров
 	$(docker_compose_bin) down
-#	${docker_bin} compose down

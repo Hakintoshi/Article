@@ -52,7 +52,7 @@ export default {
   }),
   computed: {
     isProps() {
-      return this.existingText ? true : false;
+      return !!this.existingText;
     },
   },
   mounted() {
@@ -66,11 +66,7 @@ export default {
     send() {
       if (this.commentText.trim().length < 1) return;
       this.dialog = false;
-      if (this.existingText) {
-        this.$emit("updateComment", this.commentText);
-      } else {
-        this.$emit("sendComment", this.commentText);
-      }
+      this.$emit(this.existingText ? "updateComment" : "sendComment", this.commentText);
       this.commentText = "";
     },
     updateCommentText() {

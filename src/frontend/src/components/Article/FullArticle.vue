@@ -21,6 +21,7 @@
         </ArticleDialog>
       </div>
     </div>
+    //вынести в computed
     <Comments :article-id="$route.params.id" />
     <div v-if="error">
       {{ error }}
@@ -48,12 +49,14 @@ export default {
     this.getArticle();
   },
   methods: {
+    // try catch, actions
     getArticle() {
       nestInstence
         .get(`/article/${this.$route.params.id}`)
         .then((res) => (this.article = res.data))
         .catch((res) => (this.error = res.response.data.message));
     },
+    // try catch, actions
     updateArticle(articleData) {
       const article = {
         title: articleData.title,

@@ -6,7 +6,8 @@
     <div class="d-flex justify-center my-6">
       <h3 class="text-h3">Статьи</h3>
     </div>
-    <template v-if="$store.state.articles.length > 0">
+    // Условия выносим в computed
+    <template v-if="$store.state.articles?.length > 0">
       <ArealArticle
         v-for="article in $store.state.articles"
         :id="article.article_id"

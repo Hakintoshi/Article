@@ -23,7 +23,8 @@ import nestInstence from "@/api/instences/instence";
 export default {
   name: "ArialArticle",
   props: {
-    title: { type: String, required: true },
+    // указать default значение
+    title: { type: String, required: true, default: () => ('') },
     id: { type: Number, required: true },
   },
   data: () => ({}),
@@ -32,7 +33,9 @@ export default {
       this.$router.push(`/article/${id}`);
     },
     deleteArticle(id) {
+      // использовать async await
       nestInstence.delete(`/article/${id}`);
+      // Поменять на запрос
       this.$store.state.articles = this.$store.state.articles.filter(
         (article) => article.article_id !== id,
       );

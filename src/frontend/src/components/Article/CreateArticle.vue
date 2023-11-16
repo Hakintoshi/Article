@@ -72,10 +72,13 @@ export default {
     successCreate: false,
   }),
   computed: {
+    // переменные для создания статьи дергать из mapState
+    // ...mapState('articles', {
+    //   articlesTitle: state => state.articlesTitle,
+    // }),
     btnDisabled() {
-      let titleLen = this.articleFormData.title.trim().length;
-      let bodyLen = this.articleFormData.body.trim().length;
-      return titleLen >= 4 && bodyLen >= 25 ? false : true;
+      return this.articleFormData.title.trim().length >= 4
+          && this.articleFormData.body.trim().length >= 25;
     },
   },
   mounted() {
@@ -85,14 +88,19 @@ export default {
     this.updateArticleData();
   },
   methods: {
+    // обернуть в try catch
     createArticle() {
       this.articleFormData.title.trim();
       this.articleFormData.body.trim();
+      // this.articleFormData поместить в state
+      // вынести в action
+      // вызывать с помощью mapActions
       nestInstence.post("/article", this.articleFormData).then(() => {
         this.successCreate = true;
         this.articleFormData.title = "";
         this.articleFormData.body = "";
       });
+      // лишнее убрать это делать по мере прихода ответа
       setTimeout(() => {
         this.successCreate = false;
         this.$router.push("/articles");
@@ -114,6 +122,7 @@ export default {
       this.$emit("sendData", this.articleFormData);
     },
     updateArticleData() {
+      // сделать через мутацию
       if (this.title && this.body) {
         this.articleFormData.title = this.title;
         this.articleFormData.body = this.body;

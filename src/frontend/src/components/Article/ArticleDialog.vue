@@ -32,6 +32,7 @@ export default {
     CreateArticle,
   },
   props: {
+    // default
     title: { type: String },
     body: { type: String },
   },

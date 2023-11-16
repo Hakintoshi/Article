@@ -39,12 +39,10 @@ export default {
   methods: {
     toCreateArticle() {
       this.$router.push(this.$store.state.path);
-      if (this.$router.currentRoute.fullPath === "/article") {
-        this.$store.commit("changeOnArticles");
-        this.path = "/articles";
-      } else {
-        (this.path = "/article"), this.$store.commit("changeOnCreateArticle");
-      }
+      const mutationType = this.$router.currentRoute.fullPath === "/article"
+          ? "changeOnArticles" :  "changeOnCreateArticle";
+      this.$store.commit(mutationType);
+      this.path = "/articles";
     },
   },
 };

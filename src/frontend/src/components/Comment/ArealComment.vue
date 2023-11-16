@@ -39,6 +39,7 @@ export default {
       const comment = {
         text: commentText,
       };
+      // запрос, вынос в actions
       const currComm = this.$store.state.comments.find(
         (el) => el.comment_id === this.id,
       );

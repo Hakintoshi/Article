@@ -13,6 +13,7 @@
       <v-btn @click="getComments"> Получить аналитику </v-btn>
     </div>
     <div v-if="sections" class="comments-table d-flex pt-10">
+      // в computed
       <div v-if="sections.length > 0">
         <div v-for="[articleId, comments] in sections" :key="articleId">
           <ArticleTitle :article-id="articleId" :quantity="comments.length" />

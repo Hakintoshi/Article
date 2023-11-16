@@ -6,6 +6,7 @@
         Добавить комментарий
       </CommentDialog>
     </div>
+    // в computed
     <template v-if="$store.state.comments">
       <ArealComment
         v-for="comment in $store.state.comments"
@@ -40,6 +41,7 @@ export default {
     dialog: false,
   }),
   mounted() {
+    // mapActions
     this.$store.dispatch("setComments", this.articleId);
   },
   methods: {
