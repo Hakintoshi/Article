@@ -11,16 +11,15 @@ const sequelize_1 = require("@nestjs/sequelize");
 const common_1 = require("@nestjs/common");
 const comment_service_1 = require("./comment.service");
 const comment_controller_1 = require("./comment.controller");
-const analytic_controller_1 = require("./analytic.controller");
-const comment_model_1 = require("./models/comment.model");
+const comment_model_1 = require("../../models/comment.model");
 let CommentModule = class CommentModule {
 };
 exports.CommentModule = CommentModule;
 exports.CommentModule = CommentModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([comment_model_1.Comment])],
+        imports: [sequelize_1.SequelizeModule.forFeature([comment_model_1.article_comment])],
         providers: [comment_service_1.CommentService],
-        controllers: [comment_controller_1.CommentController, analytic_controller_1.AnalyticController],
+        controllers: [comment_controller_1.CommentController],
     })
 ], CommentModule);
 //# sourceMappingURL=comment.module.js.map

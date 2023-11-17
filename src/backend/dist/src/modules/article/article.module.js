@@ -11,13 +11,13 @@ const sequelize_1 = require("@nestjs/sequelize");
 const common_1 = require("@nestjs/common");
 const article_service_1 = require("./article.service");
 const article_controller_1 = require("./article.controller");
-const article_model_1 = require("./models/article.model");
+const article_model_1 = require("../../models/article.model");
 let ArticleModule = class ArticleModule {
 };
 exports.ArticleModule = ArticleModule;
 exports.ArticleModule = ArticleModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([article_model_1.Article])],
+        imports: [sequelize_1.SequelizeModule.forFeature([article_model_1.article])],
         providers: [article_service_1.ArticleService],
         controllers: [article_controller_1.ArticleController],
     })

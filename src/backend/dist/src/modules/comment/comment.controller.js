@@ -17,23 +17,23 @@ const common_1 = require("@nestjs/common");
 const comment_service_1 = require("./comment.service");
 const dto_1 = require("./dto");
 let CommentController = class CommentController {
-    constructor(CommentService) {
-        this.CommentService = CommentService;
+    constructor(commentService) {
+        this.commentService = commentService;
     }
-    createComment(id, dto) {
-        return this.CommentService.createComment(dto, id);
+    createComment(articleId, dto) {
+        return this.commentService.createComment(dto, articleId);
     }
     getComments(id) {
-        return this.CommentService.getComments(id);
+        return this.commentService.getComments(id);
     }
     getComment(commentId, articleId) {
-        return this.CommentService.getComment(articleId, commentId);
+        return this.commentService.getComment(articleId, commentId);
     }
     updateComment(commentId, articleId, dto) {
-        return this.CommentService.updateComment(articleId, commentId, dto);
+        return this.commentService.createComment(dto, articleId, commentId);
     }
     deleteComment(commentId, articleId) {
-        return this.CommentService.deleteComment(articleId, commentId);
+        return this.commentService.deleteComment(articleId, commentId);
     }
 };
 exports.CommentController = CommentController;

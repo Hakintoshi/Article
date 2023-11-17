@@ -9,8 +9,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
-const article_module_1 = require("@/article/article.module");
-const comment_module_1 = require("@/comment/comment.module");
+const article_module_1 = require("./article/article.module");
+const comment_module_1 = require("./comment/comment.module");
+const analytic_module_1 = require("./analytic/analytic.module");
 const config_db_1 = require("../../config/config.db");
 let AppModule = class AppModule {
 };
@@ -20,6 +21,7 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             comment_module_1.CommentModule,
             article_module_1.ArticleModule,
+            analytic_module_1.AnalyticModule,
             sequelize_1.SequelizeModule.forRoot(config_db_1.default),
         ],
     })

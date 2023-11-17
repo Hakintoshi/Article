@@ -16,8 +16,8 @@ exports.AnalyticController = void 0;
 const common_1 = require("@nestjs/common");
 const comment_service_1 = require("./comment.service");
 let AnalyticController = class AnalyticController {
-    constructor(CommentService) {
-        this.CommentService = CommentService;
+    constructor(commentService) {
+        this.commentService = commentService;
     }
     getAnalytic(dateFrom, dateTo) {
         return this.CommentService.getAnalytic(dateFrom, dateTo);

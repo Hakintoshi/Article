@@ -30,7 +30,7 @@ let ArticleController = class ArticleController {
         return this.articleService.getArticle(id);
     }
     updateArticle(id, dto) {
-        return this.articleService.updateArticle(id, dto);
+        return this.articleService.createArticle(dto, id);
     }
     deleteArticle(id) {
         return this.articleService.deleteArticle(id);
@@ -70,7 +70,7 @@ __decorate([
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ArticleController.prototype, "deleteArticle", null);
 exports.ArticleController = ArticleController = __decorate([
     (0, common_1.Controller)(),

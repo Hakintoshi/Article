@@ -1,11 +1,11 @@
-import {IsNumber, IsString} from "class-validator";
+import { IsNumber, IsString } from 'class-validator';
 
-class ResponseDTO {
-    @IsString()
-    message: string;
+export class ResponseDTO {
+  @IsString()
+  message: string;
 
-    @IsNumber()
-    status: number;
+  @IsNumber()
+  status: number;
 
-    data?: any;
+  data?: any;
 }

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDTO, UpdateArticleDTO } from './dto';
-import { Article } from './models/article.model';
+import { ResponseDTO } from '@/dto/index';
 
 @Controller()
 export class ArticleController {
@@ -18,18 +18,18 @@ export class ArticleController {
 
   @Post('article')
   // Использовать другой DTO для ответа
-  createArticles(@Body() dto: CreateArticleDTO): Promise<CreateArticleDTO> {
+  createArticles(@Body() dto: CreateArticleDTO): Promise<ResponseDTO> {
     return this.articleService.createArticle(dto);
   }
 
   @Get('articles')
   // Использовать другой DTO для ответа
-  findAllArticles(): Promise<Article[]> {
+  findAllArticles(): Promise<ResponseDTO> {
     return this.articleService.getAllArticles();
   }
 
   @Get('article/:id')
-  findOneArticle(@Param('id') id: number): Promise<Article> {
+  findOneArticle(@Param('id') id: number): Promise<ResponseDTO> {
     return this.articleService.getArticle(id);
   }
 
@@ -37,13 +37,13 @@ export class ArticleController {
   updateArticle(
     @Param('id') id: number,
     @Body() dto: UpdateArticleDTO,
-  ): Promise<UpdateArticleDTO> {
-    return this.articleService.updateArticle(id, dto);
+  ): Promise<ResponseDTO> {
+    return this.articleService.createArticle(dto, id);
   }
 
   // Использовать другой DTO для ответа
   @Delete('article/:id')
-  deleteArticle(@Param('id') id: number) {
+  deleteArticle(@Param('id') id: number): Promise<ResponseDTO> {
     return this.articleService.deleteArticle(id);
   }
 }

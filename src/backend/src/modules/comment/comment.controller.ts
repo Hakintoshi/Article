@@ -9,23 +9,23 @@ import {
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentDTO } from './dto';
-import { Comment } from './models/comment.model';
+import { ResponseDTO } from '@/dto/index'
 
 @Controller('article/:id')
 export class CommentController {
-  constructor(private readonly CommentService: CommentService) {}
+  constructor(private readonly commentService: CommentService) {}
   // Замечания аналогичные модулю articles
   @Post('/comment')
   createComment(
-    @Param('id') id: number,
+    @Param('id') articleId: number,
     @Body() dto: CommentDTO,
-  ): Promise<CommentDTO> {
-    return this.CommentService.createComment(dto, id);
+  ): Promise<ResponseDTO> {
+    return this.commentService.createComment(dto, articleId);
   }
 
   @Get('/comments')
-  getComments(@Param('id') id: number): Promise<Comment[]> {
-    return this.CommentService.getComments(id);
+  getComments(@Param('id') id: number): Promise<ResponseDTO> {
+    return this.commentService.getComments(id);
   }
 
   @Get('/comment/:comment_id')
@@ -33,7 +33,7 @@ export class CommentController {
     @Param('comment_id') commentId: number,
     @Param('id') articleId: number,
   ) {
-    return this.CommentService.getComment(articleId, commentId);
+    return this.commentService.getComment(articleId, commentId);
   }
 
   @Patch('/comment/:comment_id')
@@ -42,7 +42,7 @@ export class CommentController {
     @Param('id') articleId: number,
     @Body() dto: CommentDTO,
   ) {
-    return this.CommentService.updateComment(articleId, commentId, dto);
+    return this.commentService.createComment(dto, articleId, commentId);
   }
 
   @Delete('/comment/:comment_id')
@@ -50,6 +50,6 @@ export class CommentController {
     @Param('comment_id') commentId: number,
     @Param('id') articleId: number,
   ) {
-    return this.CommentService.deleteComment(articleId, commentId);
+    return this.commentService.deleteComment(articleId, commentId);
   }
 }
