@@ -39,8 +39,10 @@ export default {
   methods: {
     toCreateArticle() {
       this.$router.push(this.$store.state.path);
-      const mutationType = this.$router.currentRoute.fullPath === "/article"
-          ? "changeOnArticles" :  "changeOnCreateArticle";
+      const mutationType =
+        this.$router.currentRoute.fullPath === "/article"
+          ? "CHANGE_ON_ARTICLES"
+          : "CHANGE_ON_CREATE_ARTICLE";
       this.$store.commit(mutationType);
       this.path = "/articles";
     },

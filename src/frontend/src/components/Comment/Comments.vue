@@ -2,14 +2,13 @@
   <div class="comments my-4 py-6 px-8">
     <h4 class="text-h4 d-flex justify-center mb-6">Комментарии</h4>
     <div class="btn-add">
-      <CommentDialog @sendComment="saveComment">
+      <CommentDialog @sendComment="createComment">
         Добавить комментарий
       </CommentDialog>
     </div>
-    // в computed
-    <template v-if="$store.state.comments">
+    <template v-if="commentsIsNotEmpty">
       <ArealComment
-        v-for="comment in $store.state.comments"
+        v-for="comment in COMMENTS"
         :id="comment.comment_id"
         :key="comment.comment_id"
         :text="comment.text"
@@ -26,9 +25,10 @@
 import ArealComment from "@/components/Comment/ArealComment.vue";
 import CommentDialog from "@/components/Comment/CommentDialog.vue";
 import nestInstence from "@/api/instences/instence";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: "FullArticle",
+  name: "ArealComments",
   components: {
     ArealComment,
     CommentDialog,
@@ -42,16 +42,23 @@ export default {
   }),
   mounted() {
     // mapActions
-    this.$store.dispatch("setComments", this.articleId);
+    this.SET_COMMENTS(this.articleId);
   },
   methods: {
-    saveComment(commentText) {
+    ...mapActions(["SET_COMMENTS"]),
+    createComment(commentText) {
       const comment = {
         text: commentText,
       };
       nestInstence
         .post(`/article/${this.articleId}/comment`, comment)
-        .then(() => this.$store.dispatch("setComments", this.articleId));
+        .then(() => this.$store.dispatch("SET_COMMENTS", this.articleId));
+    },
+  },
+  computed: {
+    ...mapGetters(["COMMENTS"]),
+    commentsIsNotEmpty() {
+      return this.COMMENTS?.length > 0;
     },
   },
 };

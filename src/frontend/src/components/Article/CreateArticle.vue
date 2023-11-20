@@ -1,8 +1,5 @@
 <template>
   <div>
-    <v-alert v-if="successCreate" class="success-alert" type="success">
-      Статья создана
-    </v-alert>
     <div class="d-flex justify-center mt-8">
       <v-form class="form py-4 px-7" @submit.prevent="createArticle()">
         <h5 class="text-h5 d-flex justify-center">
@@ -15,7 +12,8 @@
           <label
             >Введите заголовк статьи
             <v-text-field
-              v-model="articleFormData.title"
+              :value="this.articleTitle"
+              @input="updateTitle"
               placeholder="Не меньше 4 символов"
               full-width
               solo
@@ -27,7 +25,8 @@
           <label
             >Введите текст статьи
             <v-textarea
-              v-model="articleFormData.body"
+              :value="this.articleBody"
+              @input="updateBody"
               placeholder="Не меньше 24 символов"
               solo
             />
@@ -55,78 +54,86 @@
 
 <script>
 import nestInstence from "@/api/instences/instence";
+import { mapActions, mapMutations, mapState } from "vuex";
 
 export default {
   name: "CreateArticle",
   props: {
     isDialog: { type: Boolean, default: false },
-    title: { type: String },
-    body: { type: String },
   },
   data: () => ({
-    articleFormData: {
-      title: "",
-      body: "",
-    },
     errorTitle: false,
-    successCreate: false,
   }),
   computed: {
     // переменные для создания статьи дергать из mapState
     // ...mapState('articles', {
     //   articlesTitle: state => state.articlesTitle,
     // }),
+    ...mapState("article", {
+      articleTitle: (state) => state.articleTitle,
+      articleBody: (state) => state.articleBody,
+    }),
+
     btnDisabled() {
-      return this.articleFormData.title.trim().length >= 4
-          && this.articleFormData.body.trim().length >= 25;
+      return !(
+        this.articleTitle.trim().length >= 4 &&
+        this.articleBody.trim().length >= 4
+      );
+    },
+    articleData() {
+      return {
+        title: this.articleTitle,
+        body: this.articleBody,
+      };
     },
   },
   mounted() {
     if (this.$router.currentRoute.fullPath === "/article") {
-      this.$store.commit("changeOnArticles");
+      this.$store.commit("CHANGE_ON_ARTICLES");
     }
-    this.updateArticleData();
   },
   methods: {
+    ...mapActions("article", ["UPDATE_TITLE", "UPDATE_BODY"]),
+    ...mapMutations("article", ["CLEAR_ARTICLE_FIELDS"]),
+    updateTitle(e) {
+      this.UPDATE_TITLE(e);
+    },
+    updateBody(e) {
+      this.UPDATE_BODY(e);
+    },
     // обернуть в try catch
-    createArticle() {
-      this.articleFormData.title.trim();
-      this.articleFormData.body.trim();
-      // this.articleFormData поместить в state
-      // вынести в action
-      // вызывать с помощью mapActions
-      nestInstence.post("/article", this.articleFormData).then(() => {
-        this.successCreate = true;
-        this.articleFormData.title = "";
-        this.articleFormData.body = "";
-      });
-      // лишнее убрать это делать по мере прихода ответа
-      setTimeout(() => {
-        this.successCreate = false;
-        this.$router.push("/articles");
-        this.$store.state.textMenuBtn = "Написать статью";
-      }, 2000);
-
-      this.errorTitle = false;
+    async createArticle() {
+      try {
+        this.articleTitle.trim();
+        this.articleBody.trim();
+        // this.articleFormData поместить в state
+        // вынести в action
+        // вызывать с помощью mapActions
+        await nestInstence.post("/article", this.articleData);
+        this.CLEAR_ARTICLE_FIELDS();
+        // лишнее убрать это делать по мере прихода ответа
+        await this.$router.push("/articles");
+        this.$store.commit("CHANGE_ON_CREATE_ARTICLE");
+        this.errorTitle = false;
+        this.$store.commit("SHOW_NOTIFICATION");
+      } catch (e) {
+        console.error(e);
+      }
     },
     close() {
       this.$emit("closeDialog");
     },
     send() {
-      const titleLen = this.articleFormData.title.trim().length;
-      const bodyLen = this.articleFormData.body.trim().length;
+      const titleLen = this.articleTitle.trim().length;
+      const bodyLen = this.articleBody.trim().length;
       if (titleLen < 4 || bodyLen < 25) {
         this.errorTitle = true;
         return;
       }
-      this.$emit("sendData", this.articleFormData);
-    },
-    updateArticleData() {
-      // сделать через мутацию
-      if (this.title && this.body) {
-        this.articleFormData.title = this.title;
-        this.articleFormData.body = this.body;
-      }
+      this.$emit("sendData", {
+        title: this.articleTitle,
+        body: this.articleBody,
+      });
     },
   },
 };
@@ -138,12 +145,5 @@ export default {
   background-color: #ffffff;
   border: 2px solid #1976d2;
   border-radius: 15px;
-}
-
-.success-alert {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  width: 250px;
 }
 </style>

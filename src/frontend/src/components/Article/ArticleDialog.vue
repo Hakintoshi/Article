@@ -11,8 +11,6 @@
           <v-card color="primary">
             <CreateArticle
               :is-dialog="true"
-              :title="title"
-              :body="body"
               @closeDialog="close"
               @sendData="send"
             />
@@ -33,8 +31,8 @@ export default {
   },
   props: {
     // default
-    title: { type: String },
-    body: { type: String },
+    title: { type: String, default: () => "" },
+    body: { type: String, default: () => "" },
   },
   data: () => ({
     dialog: false,

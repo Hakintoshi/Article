@@ -19,26 +19,26 @@
 
 <script>
 import nestInstence from "@/api/instences/instence";
+import { mapActions } from "vuex";
 
 export default {
   name: "ArialArticle",
   props: {
     // указать default значение
-    title: { type: String, required: true, default: () => ('') },
+    title: { type: String, required: false, default: () => "Заголовок статьи" },
     id: { type: Number, required: true },
   },
   data: () => ({}),
   methods: {
+    ...mapActions("article", ["SET_ARTICLES"]),
     onArticle(id) {
       this.$router.push(`/article/${id}`);
     },
-    deleteArticle(id) {
+    async deleteArticle(id) {
       // использовать async await
-      nestInstence.delete(`/article/${id}`);
+      await nestInstence.delete(`/article/${id}`);
       // Поменять на запрос
-      this.$store.state.articles = this.$store.state.articles.filter(
-        (article) => article.article_id !== id,
-      );
+      await this.SET_ARTICLES();
     },
   },
 };

@@ -19,6 +19,7 @@
 <script>
 import nestInstence from "@/api/instences/instence";
 import CommentDialog from "@/components/Comment/CommentDialog";
+import { mapActions } from "vuex";
 
 export default {
   name: "ArealComment",
@@ -31,22 +32,23 @@ export default {
     articleId: { type: String, required: true },
   },
   methods: {
-    deleteComment() {
-      nestInstence.delete(`/article/${this.articleId}/comment/${this.id}`);
-      this.$store.dispatch("setComments", this.articleId);
+    ...mapActions(["SET_COMMENTS"]),
+    async deleteComment() {
+      await nestInstence.delete(
+        `/article/${this.articleId}/comment/${this.id}`,
+      );
+      await this.SET_COMMENTS(this.articleId);
     },
-    updateComment(commentText) {
+    async updateComment(commentText) {
       const comment = {
         text: commentText,
       };
       // запрос, вынос в actions
-      const currComm = this.$store.state.comments.find(
-        (el) => el.comment_id === this.id,
+      await nestInstence.patch(
+        `/article/${this.articleId}/comment/${this.id}`,
+        comment,
       );
-      currComm.text = commentText;
-      nestInstence
-        .patch(`/article/${this.articleId}/comment/${this.id}`, comment)
-        .then(() => this.$store.dispatch("setComments", this.articleId));
+      await this.SET_COMMENTS(this.articleId);
     },
   },
 };

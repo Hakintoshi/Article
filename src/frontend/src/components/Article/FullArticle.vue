@@ -21,7 +21,6 @@
         </ArticleDialog>
       </div>
     </div>
-    //вынести в computed
     <Comments :article-id="$route.params.id" />
     <div v-if="error">
       {{ error }}
@@ -33,6 +32,7 @@
 import nestInstence from "@/api/instences/instence";
 import ArticleDialog from "@/components/Article/ArticleDialog.vue";
 import Comments from "../Comment/Comments.vue";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "FullArticle",
@@ -41,31 +41,33 @@ export default {
     Comments,
   },
   data: () => ({
-    article: null,
     error: null,
     dialog: false,
   }),
   mounted() {
-    this.getArticle();
+    this.GET_ARTICLE(this.$route.params.id);
   },
   methods: {
     // try catch, actions
-    getArticle() {
-      nestInstence
-        .get(`/article/${this.$route.params.id}`)
-        .then((res) => (this.article = res.data))
-        .catch((res) => (this.error = res.response.data.message));
+    ...mapActions("article", ["GET_ARTICLE"]),
+    async updateArticle(articleData) {
+      try {
+        const article = {
+          title: articleData.title,
+          body: articleData.body,
+        };
+        console.log(article);
+        await nestInstence.patch(`/article/${this.$route.params.id}`, article);
+        await this.GET_ARTICLE(this.$route.params.id);
+      } catch (e) {
+        console.error(e);
+      }
     },
-    // try catch, actions
-    updateArticle(articleData) {
-      const article = {
-        title: articleData.title,
-        body: articleData.body,
-      };
-      nestInstence
-        .patch(`/article/${this.$route.params.id}`, article)
-        .then(() => this.getArticle());
-    },
+  },
+  computed: {
+    ...mapState("article", {
+      article: (state) => state.article,
+    }),
   },
 };
 </script>
@@ -74,5 +76,6 @@ export default {
 .article {
   width: 1000px;
   background-color: #e3f2fd;
+  word-wrap: break-word;
 }
 </style>

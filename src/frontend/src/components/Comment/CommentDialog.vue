@@ -66,7 +66,10 @@ export default {
     send() {
       if (this.commentText.trim().length < 1) return;
       this.dialog = false;
-      this.$emit(this.existingText ? "updateComment" : "sendComment", this.commentText);
+      this.$emit(
+        this.existingText ? "updateComment" : "sendComment",
+        this.commentText,
+      );
       this.commentText = "";
     },
     updateCommentText() {

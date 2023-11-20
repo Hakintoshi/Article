@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import nestInstence from "@/api/instences/instence";
+// import nestInstence from "@/api/instences/instence";
+import { article } from "@/vuex/modules/article/index";
+import comment from "@/vuex/modules/comment/index";
 
 Vue.use(Vuex);
 
@@ -10,47 +12,28 @@ const store = new Vuex.Store({
   state: {
     textMenuBtn: "Написать статью",
     path: "/article",
-    articles: null,
-    comments: null,
+    successCreate: false,
   },
   mutations: {
     // Поменять наименование мутации, CHANGE_ON_ARTICLES
-    changeOnArticles(state) {
+    CHANGE_ON_ARTICLES(state) {
       state.textMenuBtn = "Вернуться к статьям";
       state.path = "/articles";
     },
-    changeOnCreateArticle(state) {
+    CHANGE_ON_CREATE_ARTICLE(state) {
       state.textMenuBtn = "Написать статью";
       state.path = "/article";
     },
+    SHOW_NOTIFICATION(state) {
+      state.successCreate = true;
+      setTimeout(() => {
+        state.successCreate = false;
+      }, 1000);
+    },
     // заменить на setArticles и setComments
-    SET_VALUE(state, { field, value }) {
-      state[field] = value;
-    },
-    setArticles(state, payload) {
-      state.articles = payload;
-    },
-    setComments(state, payload) {
-      state.comments = payload;
-    },
-  },
-  actions: {
-    //Для начала нужно сделать так чтобы ахиос всегда понимал что нам нужно стучаться на бэкэнд по урлу ххтпп/127.0.0.1/глобальный префикс бэк приложения
-    // Оборачиваем в try catch, console.error
-    async setArticles({ commit }) {
-      const res = await nestInstence.get(`/articles`);
-      if (res.status === 200) {
-        commit("setArticles", res.data);
-      }
-    },
-    async setComments({ commit }, articleId) {
-      const res = await nestInstence.get(`/article/${articleId}/comments`);
-      if (res.status === 200) {
-        commit("setComments", res.data);
-      }
-    },
   },
   getters: {},
+  modules: { article, comment },
 });
 
 export default store;
