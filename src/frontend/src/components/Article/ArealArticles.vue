@@ -1,11 +1,10 @@
 <template>
   <div class="mt-6 mb-10">
     <router-link to="/analytic">
-      <v-btn color="green accent-4"> Аналитика комментариев </v-btn>
+      <v-btn color="green accent-4" class="analytic-btn">
+        Аналитика комментариев
+      </v-btn>
     </router-link>
-    <v-alert v-if="successCreate" class="success-alert" type="success">
-      Статья создана
-    </v-alert>
     <div class="d-flex justify-center my-6">
       <h3 class="text-h3">Статьи</h3>
     </div>
@@ -34,7 +33,7 @@ export default {
   },
   data: () => ({}),
   methods: {
-    ...mapActions("article", ["SET_ARTICLES"]),
+    ...mapActions("article", ["setArticles"]),
   },
   computed: {
     ...mapGetters("article", ["ARTICLES"]),
@@ -44,7 +43,7 @@ export default {
     },
   },
   mounted() {
-    this.SET_ARTICLES();
+    this.setArticles();
     if (this.$router.currentRoute.fullPath === "/articles") {
       this.$store.commit("CHANGE_ON_CREATE_ARTICLE");
     }
@@ -53,10 +52,8 @@ export default {
 </script>
 
 <style>
-.success-alert {
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  width: 250px;
+.analytic-btn {
+  position: fixed;
+  left: 10px;
 }
 </style>

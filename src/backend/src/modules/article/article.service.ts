@@ -28,23 +28,15 @@ export class ArticleService {
   ): Promise<ResponseDTO> {
     try {
       if (articleId) {
-        try {
-          await this.articleRepository.update(
-            { title: dto.title, body: dto.body },
-            { where: { article_id: articleId } },
-          );
-          return {
-            message: message.SUCCESS_UPDATE_ARTICLE,
-            status: HttpStatus.OK,
-            data: null,
-          };
-        } catch (e) {
-          this.logger.error(message.ERROR_UPDATE_ARTICLE);
-          throw new HttpException(
-            `${message.ERROR_UPDATE_ARTICLE} ${e}`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
+        await this.articleRepository.update(
+          { title: dto.title, body: dto.body },
+          { where: { article_id: articleId } },
+        );
+        return {
+          message: message.SUCCESS_UPDATE_ARTICLE,
+          status: HttpStatus.OK,
+          data: null,
+        };
       }
 
       await this.articleRepository.create({

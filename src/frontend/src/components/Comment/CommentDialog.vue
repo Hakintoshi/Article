@@ -55,9 +55,6 @@ export default {
       return !!this.existingText;
     },
   },
-  mounted() {
-    this.updateCommentText();
-  },
   methods: {
     close() {
       this.dialog = false;
@@ -71,11 +68,6 @@ export default {
         this.commentText,
       );
       this.commentText = "";
-    },
-    updateCommentText() {
-      if (this.existingText) {
-        this.commentText = this.existingText;
-      }
     },
   },
 };

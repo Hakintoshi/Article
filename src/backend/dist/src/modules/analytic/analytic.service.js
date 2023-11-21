@@ -22,20 +22,24 @@ const sequelize_2 = require("sequelize");
 const article_model_1 = require("../../models/article.model");
 const const_1 = require("./const");
 let AnalyticService = AnalyticService_1 = class AnalyticService {
-    constructor(commentRepository) {
-        this.commentRepository = commentRepository;
+    constructor(articleRepository) {
+        this.articleRepository = articleRepository;
         this.logger = new common_1.Logger(AnalyticService_1.name);
     }
     async getAnalytic(dateFrom, dateTo) {
+        console.log(dateFrom, dateTo);
+        console.log(new Date(+dateFrom), new Date(+dateTo));
         try {
-            const comments = await this.commentRepository.findAll({
-                where: {
-                    createdAt: {
-                        [sequelize_2.Op.gte]: new Date(+dateFrom),
-                        [sequelize_2.Op.lte]: new Date(+dateTo),
+            const comments = await this.articleRepository.findAll({
+                include: {
+                    model: comment_model_1.article_comment,
+                    where: {
+                        createdAt: {
+                            [sequelize_2.Op.gte]: new Date(+dateFrom),
+                            [sequelize_2.Op.lte]: new Date(+dateTo),
+                        },
                     },
                 },
-                include: article_model_1.article,
             });
             return {
                 message: const_1.message.SUCCESS_GET_ANALYTIC,
@@ -52,7 +56,7 @@ let AnalyticService = AnalyticService_1 = class AnalyticService {
 exports.AnalyticService = AnalyticService;
 exports.AnalyticService = AnalyticService = AnalyticService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, sequelize_1.InjectModel)(comment_model_1.article_comment)),
+    __param(0, (0, sequelize_1.InjectModel)(article_model_1.article)),
     __metadata("design:paramtypes", [Object])
 ], AnalyticService);
 //# sourceMappingURL=analytic.service.js.map

@@ -5,11 +5,11 @@
       <CommentDialog
         :existing-text="text"
         class="d-flex align-center"
-        @updateComment="updateComment"
+        @updateComment="update"
       >
         <v-icon>mdi-pencil</v-icon>
       </CommentDialog>
-      <v-btn color="red accent-3" small class="ml-4" @click="deleteComment">
+      <v-btn color="red accent-3" small class="ml-4" @click="remove">
         <v-icon color="white"> mdi-delete </v-icon>
       </v-btn>
     </div>
@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import nestInstence from "@/api/instences/instence";
 import CommentDialog from "@/components/Comment/CommentDialog";
 import { mapActions } from "vuex";
 
@@ -31,24 +30,23 @@ export default {
     id: { type: Number, required: true },
     articleId: { type: String, required: true },
   },
-  methods: {
-    ...mapActions(["SET_COMMENTS"]),
-    async deleteComment() {
-      await nestInstence.delete(
-        `/article/${this.articleId}/comment/${this.id}`,
-      );
-      await this.SET_COMMENTS(this.articleId);
-    },
-    async updateComment(commentText) {
-      const comment = {
-        text: commentText,
+  computed: {
+    idForUrl() {
+      return {
+        articleId: this.articleId,
+        commentId: this.id,
       };
-      // запрос, вынос в actions
-      await nestInstence.patch(
-        `/article/${this.articleId}/comment/${this.id}`,
-        comment,
-      );
-      await this.SET_COMMENTS(this.articleId);
+    },
+  },
+  methods: {
+    ...mapActions("comment", ["setComments", "updateComment", "deleteComment"]),
+    async remove() {
+      await this.deleteComment(this.idForUrl);
+      await this.setComments(this.articleId);
+    },
+    async update(commentText) {
+      await this.updateComment({ commentText, ...this.idForUrl });
+      await this.setComments(this.articleId);
     },
   },
 };
@@ -58,5 +56,6 @@ export default {
 .comment {
   background-color: white;
   border-radius: 15px;
+  word-wrap: break-word;
 }
 </style>

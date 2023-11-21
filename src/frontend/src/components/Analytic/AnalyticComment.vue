@@ -10,72 +10,78 @@
       <PickerDate title="Дата от" @setDate="setDateFrom" />
       <PickerDate title="Дата до" @setDate="setDateTo" />
       <v-spacer />
-      <v-btn @click="getComments"> Получить аналитику </v-btn>
+      <v-btn @click="getArticleComments"> Получить аналитику </v-btn>
     </div>
-    <div v-if="sections" class="comments-table d-flex pt-10">
-      // в computed
-      <div v-if="sections.length > 0">
-        <div v-for="[articleId, comments] in sections" :key="articleId">
-          <ArticleTitle :article-id="articleId" :quantity="comments.length" />
-          <p
-            v-for="(comment, i) in comments"
-            :key="i"
-            class="comments-table__cell"
-          >
-            {{ i + 1 }}. {{ comment }}
-          </p>
+    <div v-if="sectionsNotEmpty" class="table-section mt-10">
+      <div v-for="section in sections" :key="section.articleId" class="section">
+        <h4 class="text-h4">Статья: {{ section.title }}</h4>
+        <h5 class="text-h5 my-2">
+          Список комментариев ({{ section.comments?.length }})
+        </h5>
+        <div
+          v-for="comment in section.comments"
+          :key="comment.comment_id"
+          class="section-table__comment"
+        >
+          <div>
+            <p>Комментарий оставлен: {{ formatDate(comment.createdAt) }}</p>
+            <p>{{ comment.text }}</p>
+          </div>
         </div>
       </div>
-      <div v-else>Нет комментариев за данный период</div>
     </div>
+    <div v-else-if="sectionIsEmpty">Нет комментариев за данный период</div>
   </div>
 </template>
 
 <script>
 import nestInstence from "@/api/instences/instence";
-import PickerDate from "@/components/Comment/PickerDate";
-import ArticleTitle from "@/components/Analytic/ArticleTitle";
+import PickerDate from "@/components/Analytic/PickerDate.vue";
 
 export default {
   name: "AnalyticComment",
   components: {
     PickerDate,
-    ArticleTitle,
   },
   data: () => ({
     dateTo: null,
     dateFrom: null,
-    comments: null,
     sections: null,
   }),
   methods: {
-    getSections() {
-      if (!this.comments) return;
-      const sections = {};
-      for (let i = 0; i < this.comments.length; i++) {
-        if (!sections[this.comments[i].articleId]) {
-          sections[this.comments[i].articleId] = [];
-        }
-        sections[this.comments[i].articleId].push(this.comments[i].text);
-      }
-      this.sections = Object.entries(sections);
-    },
     setDateFrom(date) {
       this.dateFrom = new Date(date).getTime();
     },
     setDateTo(date) {
       this.dateTo = new Date(date).getTime() + 86400000;
     },
-    getComments() {
-      if (!this.dateTo || !this.dateFrom) return;
-      nestInstence
-        .get(
+    async getArticleComments() {
+      try {
+        if (!this.dateTo || !this.dateFrom) return;
+        const res = await nestInstence.get(
           `/analytic/comments/?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}`,
-        )
-        .then((res) => {
-          this.comments = res.data;
-          this.getSections();
-        });
+        );
+        if (res.data?.status === 200 && res.data?.data) {
+          this.sections = res.data.data;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    formatDate(d) {
+      const date = new Date(d);
+      const day = date.getDate();
+      const month = date.getMonth();
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    },
+  },
+  computed: {
+    sectionsNotEmpty() {
+      return this.sections?.length > 0;
+    },
+    sectionIsEmpty() {
+      return this.sections?.length === 0;
     },
   },
 };
@@ -94,5 +100,19 @@ export default {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+}
+.table-section {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+  width: 1000px;
+}
+.section {
+  padding: 10px 20px;
+  border-bottom: 1px solid black;
+}
+.section-table__comment {
+  width: 950px;
+  word-wrap: break-word;
 }
 </style>

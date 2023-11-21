@@ -1,6 +1,6 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { article_comment } from '../../models/comment.model';
+import { article_comment } from '@/models/comment.model';
 import { ResponseDTO } from '@/dto/index';
 import { HttpStatus } from '@/const/httpStatus';
 import { Op } from 'sequelize';
@@ -10,8 +10,8 @@ import { message } from '@/modules/analytic/const';
 @Injectable()
 export class AnalyticService {
   constructor(
-    @InjectModel(article_comment)
-    private commentRepository: typeof article_comment,
+    @InjectModel(article)
+    private articleRepository: typeof article,
   ) {}
 
   private readonly logger = new Logger(AnalyticService.name);
@@ -24,15 +24,19 @@ export class AnalyticService {
    * @param dateTo
    */
   async getAnalytic(dateFrom: number, dateTo: number): Promise<ResponseDTO> {
+    console.log(dateFrom, dateTo);
+    console.log(new Date(+dateFrom), new Date(+dateTo));
     try {
-      const comments = await this.commentRepository.findAll({
-        where: {
-          createdAt: {
-            [Op.gte]: new Date(+dateFrom),
-            [Op.lte]: new Date(+dateTo),
+      const comments = await this.articleRepository.findAll({
+        include: {
+          model: article_comment,
+          where: {
+            createdAt: {
+              [Op.gte]: new Date(+dateFrom),
+              [Op.lte]: new Date(+dateTo),
+            },
           },
         },
-        include: article,
       });
       return {
         message: message.SUCCESS_GET_ANALYTIC,

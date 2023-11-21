@@ -22,9 +22,6 @@
       </div>
     </div>
     <Comments :article-id="$route.params.id" />
-    <div v-if="error">
-      {{ error }}
-    </div>
   </div>
 </template>
 
@@ -41,24 +38,22 @@ export default {
     Comments,
   },
   data: () => ({
-    error: null,
     dialog: false,
   }),
   mounted() {
-    this.GET_ARTICLE(this.$route.params.id);
+    this.getArticle(this.$route.params.id);
   },
   methods: {
     // try catch, actions
-    ...mapActions("article", ["GET_ARTICLE"]),
+    ...mapActions("article", ["getArticle"]),
     async updateArticle(articleData) {
       try {
         const article = {
           title: articleData.title,
           body: articleData.body,
         };
-        console.log(article);
         await nestInstence.patch(`/article/${this.$route.params.id}`, article);
-        await this.GET_ARTICLE(this.$route.params.id);
+        await this.getArticle(this.$route.params.id);
       } catch (e) {
         console.error(e);
       }

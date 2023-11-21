@@ -27,18 +27,12 @@ let CommentService = CommentService_1 = class CommentService {
     async createComment(dto, articleId, commentId) {
         try {
             if (commentId) {
-                try {
-                    await this.commentRepository.update({ text: dto.text }, { where: { articleId: articleId, comment_id: commentId } });
-                    return {
-                        message: index_1.message.SUCCESS_UPDATE_COMMENT,
-                        status: httpStatus_1.HttpStatus.OK,
-                        data: null,
-                    };
-                }
-                catch (e) {
-                    this.logger.error(index_1.message.ERROR_UPDATE_COMMENT);
-                    throw new common_1.HttpException(`${index_1.message.ERROR_UPDATE_COMMENT} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
-                }
+                await this.commentRepository.update({ text: dto.text }, { where: { articleId: articleId, comment_id: commentId } });
+                return {
+                    message: index_1.message.SUCCESS_UPDATE_COMMENT,
+                    status: httpStatus_1.HttpStatus.OK,
+                    data: null,
+                };
             }
             await this.commentRepository.create({
                 text: dto.text,

@@ -10,14 +10,14 @@ exports.AnalyticModule = void 0;
 const sequelize_1 = require("@nestjs/sequelize");
 const common_1 = require("@nestjs/common");
 const analytic_controller_1 = require("./analytic.controller");
-const comment_model_1 = require("../../models/comment.model");
+const article_model_1 = require("../../models/article.model");
 const analytic_service_1 = require("./analytic.service");
 let AnalyticModule = class AnalyticModule {
 };
 exports.AnalyticModule = AnalyticModule;
 exports.AnalyticModule = AnalyticModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([comment_model_1.article_comment])],
+        imports: [sequelize_1.SequelizeModule.forFeature([article_model_1.article])],
         providers: [analytic_service_1.AnalyticService],
         controllers: [analytic_controller_1.AnalyticController],
     })

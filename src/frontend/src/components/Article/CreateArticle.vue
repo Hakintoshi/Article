@@ -6,14 +6,14 @@
           Форма для написания статьи
         </h5>
         <v-alert v-if="errorTitle" type="error" class="mt-2">
-          Заголовок не меньше 4 и текст не меньше 25 символов
+          Заголовок не меньше 4 и текст не меньше 10 символов
         </v-alert>
         <div class="mt-4">
           <label
             >Введите заголовк статьи
             <v-text-field
               :value="this.articleTitle"
-              @input="updateTitle"
+              @input="updateTitleArticle"
               placeholder="Не меньше 4 символов"
               full-width
               solo
@@ -26,8 +26,8 @@
             >Введите текст статьи
             <v-textarea
               :value="this.articleBody"
-              @input="updateBody"
-              placeholder="Не меньше 24 символов"
+              @input="updateBodyArticle"
+              placeholder="Не меньше 10 символов"
               solo
             />
           </label>
@@ -75,9 +75,9 @@ export default {
     }),
 
     btnDisabled() {
-      return !(
-        this.articleTitle.trim().length >= 4 &&
-        this.articleBody.trim().length >= 4
+      return (
+        this.articleTitle.trim().length < 4 ||
+        this.articleBody.trim().length < 10
       );
     },
     articleData() {
@@ -93,13 +93,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions("article", ["UPDATE_TITLE", "UPDATE_BODY"]),
+    ...mapActions("article", ["updateTitle", "updateBody"]),
     ...mapMutations("article", ["CLEAR_ARTICLE_FIELDS"]),
-    updateTitle(e) {
-      this.UPDATE_TITLE(e);
+    updateTitleArticle(e) {
+      this.updateTitle(e);
     },
-    updateBody(e) {
-      this.UPDATE_BODY(e);
+    updateBodyArticle(e) {
+      this.updateBody(e);
     },
     // обернуть в try catch
     async createArticle() {
@@ -115,18 +115,23 @@ export default {
         await this.$router.push("/articles");
         this.$store.commit("CHANGE_ON_CREATE_ARTICLE");
         this.errorTitle = false;
-        this.$store.commit("SHOW_NOTIFICATION");
+        this.$root.SnackBar.show({ message: "Статья создана" });
       } catch (e) {
+        this.$root.SnackBar.show({
+          message: "Не удалось создать статью",
+          color: "red",
+        });
         console.error(e);
       }
     },
     close() {
+      this.CLEAR_ARTICLE_FIELDS();
       this.$emit("closeDialog");
     },
     send() {
       const titleLen = this.articleTitle.trim().length;
       const bodyLen = this.articleBody.trim().length;
-      if (titleLen < 4 || bodyLen < 25) {
+      if (titleLen < 4 || bodyLen < 10) {
         this.errorTitle = true;
         return;
       }
@@ -134,6 +139,7 @@ export default {
         title: this.articleTitle,
         body: this.articleBody,
       });
+      this.CLEAR_ARTICLE_FIELDS();
     },
   },
 };

@@ -30,24 +30,16 @@ export class CommentService {
   ): Promise<ResponseDTO> {
     try {
       if (commentId) {
-        try {
-          await this.commentRepository.update(
-            { text: dto.text },
-            { where: { articleId: articleId, comment_id: commentId } },
-          );
+        await this.commentRepository.update(
+          { text: dto.text },
+          { where: { articleId: articleId, comment_id: commentId } },
+        );
 
-          return {
-            message: message.SUCCESS_UPDATE_COMMENT,
-            status: HttpStatus.OK,
-            data: null,
-          };
-        } catch (e) {
-          this.logger.error(message.ERROR_UPDATE_COMMENT);
-          throw new HttpException(
-            `${message.ERROR_UPDATE_COMMENT} ${e}`,
-            HttpStatus.BAD_REQUEST,
-          );
-        }
+        return {
+          message: message.SUCCESS_UPDATE_COMMENT,
+          status: HttpStatus.OK,
+          data: null,
+        };
       }
       await this.commentRepository.create({
         text: dto.text,

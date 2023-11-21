@@ -37,26 +37,28 @@ export default {
     articleId: { type: String, required: true },
   },
   data: () => ({
-    error: null,
     dialog: false,
   }),
   mounted() {
     // mapActions
-    this.SET_COMMENTS(this.articleId);
+    this.setComments(this.articleId);
   },
   methods: {
-    ...mapActions(["SET_COMMENTS"]),
-    createComment(commentText) {
-      const comment = {
-        text: commentText,
-      };
-      nestInstence
-        .post(`/article/${this.articleId}/comment`, comment)
-        .then(() => this.$store.dispatch("SET_COMMENTS", this.articleId));
+    ...mapActions("comment", ["setComments"]),
+    async createComment(commentText) {
+      try {
+        const comment = {
+          text: commentText,
+        };
+        await nestInstence.post(`/article/${this.articleId}/comment`, comment);
+        await this.setComments(this.articleId);
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
   computed: {
-    ...mapGetters(["COMMENTS"]),
+    ...mapGetters("comment", ["COMMENTS"]),
     commentsIsNotEmpty() {
       return this.COMMENTS?.length > 0;
     },

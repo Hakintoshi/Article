@@ -30,7 +30,7 @@ export default {
   },
   data: () => ({}),
   methods: {
-    ...mapActions("article", ["SET_ARTICLES"]),
+    ...mapActions("article", ["setArticles"]),
     onArticle(id) {
       this.$router.push(`/article/${id}`);
     },
@@ -38,7 +38,8 @@ export default {
       // использовать async await
       await nestInstence.delete(`/article/${id}`);
       // Поменять на запрос
-      await this.SET_ARTICLES();
+      await this.setArticles();
+      this.$root.SnackBar.show({ message: "Статья удалена" });
     },
   },
 };

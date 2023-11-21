@@ -18,24 +18,30 @@
 
     <v-main>
       <ArealMain />
+      <SnackBar ref="snackBar"></SnackBar>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import ArealMain from "@/components/ArealMain.vue";
+import SnackBar from "@/components/SnackBar.vue";
 
 export default {
   name: "App",
 
   components: {
     ArealMain,
+    SnackBar,
   },
 
   data: () => ({
     path: "/article",
     textMenuBtn: "Написать статью",
   }),
+  mounted() {
+    this.$root.SnackBar = this.$refs.snackBar;
+  },
   methods: {
     toCreateArticle() {
       this.$router.push(this.$store.state.path);

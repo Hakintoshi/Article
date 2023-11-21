@@ -27,18 +27,12 @@ let ArticleService = ArticleService_1 = class ArticleService {
     async createArticle(dto, articleId) {
         try {
             if (articleId) {
-                try {
-                    await this.articleRepository.update({ title: dto.title, body: dto.body }, { where: { article_id: articleId } });
-                    return {
-                        message: index_1.message.SUCCESS_UPDATE_ARTICLE,
-                        status: httpStatus_1.HttpStatus.OK,
-                        data: null,
-                    };
-                }
-                catch (e) {
-                    this.logger.error(index_1.message.ERROR_UPDATE_ARTICLE);
-                    throw new common_1.HttpException(`${index_1.message.ERROR_UPDATE_ARTICLE} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
-                }
+                await this.articleRepository.update({ title: dto.title, body: dto.body }, { where: { article_id: articleId } });
+                return {
+                    message: index_1.message.SUCCESS_UPDATE_ARTICLE,
+                    status: httpStatus_1.HttpStatus.OK,
+                    data: null,
+                };
             }
             await this.articleRepository.create({
                 title: dto.title,
