@@ -23,14 +23,14 @@ let ArticleController = class ArticleController {
     createArticles(dto) {
         return this.articleService.createArticle(dto);
     }
-    findAllArticles() {
+    getArticles() {
         return this.articleService.getAllArticles();
     }
-    findOneArticle(id) {
+    getArticle(id) {
         return this.articleService.getArticle(id);
     }
     updateArticle(id, dto) {
-        return this.articleService.createArticle(dto, id);
+        return this.articleService.createArticle({ id, ...dto });
     }
     deleteArticle(id) {
         return this.articleService.deleteArticle(id);
@@ -49,20 +49,20 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], ArticleController.prototype, "findAllArticles", null);
+], ArticleController.prototype, "getArticles", null);
 __decorate([
     (0, common_1.Get)('article/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], ArticleController.prototype, "findOneArticle", null);
+], ArticleController.prototype, "getArticle", null);
 __decorate([
     (0, common_1.Patch)('article/:id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, dto_1.UpdateArticleDTO]),
+    __metadata("design:paramtypes", [Number, dto_1.CreateArticleDTO]),
     __metadata("design:returntype", Promise)
 ], ArticleController.prototype, "updateArticle", null);
 __decorate([

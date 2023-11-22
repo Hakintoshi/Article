@@ -18,29 +18,23 @@
 </template>
 
 <script>
-import nestInstence from "@/api/instences/instence";
 import { mapActions } from "vuex";
 
 export default {
   name: "ArialArticle",
   props: {
-    // указать default значение
     title: { type: String, required: false, default: () => "Заголовок статьи" },
     id: { type: Number, required: true },
   },
   data: () => ({}),
   methods: {
-    ...mapActions("article", ["setArticles"]),
+    ...mapActions("article", ["setArticles", "removeArticle"]),
     onArticle(id) {
       this.$router.push(`/article/${id}`);
     },
     async deleteArticle(id) {
-      // использовать async await
-      const res = await nestInstence.delete(`/article/${id}`);
-      // Добавить проверку
-      // if res
+      await this.removeArticle(id);
       this.$root.SnackBar.show({ message: "Статья удалена" });
-      // Поменять на запрос
       await this.setArticles();
     },
   },

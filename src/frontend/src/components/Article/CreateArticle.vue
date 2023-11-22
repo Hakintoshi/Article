@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import nestInstence from "@/api/instences/instence";
 import { mapActions, mapMutations, mapState } from "vuex";
+import { constants } from "@/const";
 
 export default {
   name: "CreateArticle",
@@ -65,20 +65,15 @@ export default {
     errorTitle: false,
   }),
   computed: {
-    // переменные для создания статьи дергать из mapState
-    // ...mapState('articles', {
-    //   articlesTitle: state => state.articlesTitle,
-    // }),
     ...mapState("article", {
       articleTitle: (state) => state.articleTitle,
       articleBody: (state) => state.articleBody,
     }),
 
     btnDisabled() {
-      // числовые значения тоже выносятся в константы
       return (
-        this.articleTitle.trim().length < 4 ||
-        this.articleBody.trim().length < 10
+        this.articleTitle.trim().length < constants.MIN_LENGTH_ARTICLE_TITLE ||
+        this.articleBody.trim().length < constants.MIN_LENGTH_ARTICLE_BODY
       );
     },
     articleData() {
@@ -94,7 +89,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("article", ["updateTitle", "updateBody"]),
+    ...mapActions("article", ["updateTitle", "updateBody", "create"]),
     ...mapMutations("article", ["CLEAR_ARTICLE_FIELDS"]),
     ...mapMutations(["CHANGE_ON_ARTICLES", "CHANGE_ON_CREATE_ARTICLE"]),
     updateTitleArticle(e) {
@@ -103,30 +98,22 @@ export default {
     updateBodyArticle(e) {
       this.updateBody(e);
     },
-    // обернуть в try catch
+
     async createArticle() {
       try {
         this.articleTitle.trim();
         this.articleBody.trim();
-        // this.articleFormData поместить в state
-        // вынести в action!!!
-        // вызывать с помощью mapActions
-        const res = await nestInstence.post("/article", this.articleData);
-        // Сделать проверку по ответу
-        // if (res) {
+        await this.create(this.articleData);
         this.CLEAR_ARTICLE_FIELDS();
-        // лишнее убрать это делать по мере прихода ответа
         this.$router.push("/articles");
         this.CHANGE_ON_CREATE_ARTICLE();
         this.errorTitle = false;
-        // Сообщения вынести в константы
-        this.$root.SnackBar.show({ message: "Статья создана" });
+        this.$root.SnackBar.show({ message: constants.ARTICLE_CREATE });
       } catch (e) {
         this.$root.SnackBar.show({
-          message: "Не удалось создать статью",
+          message: constants.ARTICLE_CREATE_ERROR,
           color: "red",
         });
-        console.error(e);
       }
     },
     close() {
@@ -137,7 +124,10 @@ export default {
       const titleLen = this.articleTitle.trim().length;
       const bodyLen = this.articleBody.trim().length;
       // Вынести числа в константы
-      if (titleLen < 4 || bodyLen < 10) {
+      if (
+        titleLen < constants.MIN_LENGTH_ARTICLE_TITLE ||
+        bodyLen < constants.MIN_LENGTH_ARTICLE_BODY
+      ) {
         this.errorTitle = true;
         return;
       }

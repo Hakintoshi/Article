@@ -19,6 +19,7 @@
 <script>
 import CommentDialog from "@/components/Comment/CommentDialog";
 import { mapActions } from "vuex";
+import { constants } from "@/const";
 
 export default {
   name: "ArealComment",
@@ -42,10 +43,12 @@ export default {
     ...mapActions("comment", ["setComments", "updateComment", "deleteComment"]),
     async remove() {
       await this.deleteComment(this.idForUrl);
+      this.$root.SnackBar.show({ message: constants.COMMENT_DELETE });
       await this.setComments(this.articleId);
     },
     async update(commentText) {
       await this.updateComment({ commentText, ...this.idForUrl });
+      this.$root.SnackBar.show({ message: constants.COMMENT_UPDATE });
       await this.setComments(this.articleId);
     },
   },

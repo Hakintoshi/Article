@@ -1,36 +1,30 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { article_comment } from '@/models/comment.model';
-import { ResponseDTO } from '@/dto/index';
-import { HttpStatus } from '@/const/httpStatus';
+import { ArticleComment } from '@/models/comment.model';
+import { ResponseDTO } from '@/dto';
 import { Op } from 'sequelize';
-import { article } from '@/models/article.model';
+import { Article } from '@/models/article.model';
 import { message } from '@/modules/analytic/const';
 
 @Injectable()
 export class AnalyticService {
   constructor(
-    @InjectModel(article)
-    private articleRepository: typeof article,
+    @InjectModel(Article)
+    private articleRepository: typeof Article,
   ) {}
 
   private readonly logger = new Logger(AnalyticService.name);
 
-  // Вынести в модуль аналитики
-  // Сделать группировку по статьям здесь, используя includes в sequielze
   /**
    * Получение аналитики комментариев по статьям за определенный период времени
    * @param dateFrom
    * @param dateTo
    */
   async getAnalytic(dateFrom: number, dateTo: number): Promise<ResponseDTO> {
-    //Убрать логи
-    console.log(dateFrom, dateTo);
-    console.log(new Date(+dateFrom), new Date(+dateTo));
     try {
       const comments = await this.articleRepository.findAll({
         include: {
-          model: article_comment,
+          model: ArticleComment,
           where: {
             createdAt: {
               [Op.gte]: new Date(+dateFrom),

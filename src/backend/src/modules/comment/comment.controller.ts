@@ -9,18 +9,17 @@ import {
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentDTO } from './dto';
-import { ResponseDTO } from '@/dto/index'
+import { ResponseDTO } from '@/dto';
 
 @Controller('article/:id')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
-  // Замечания аналогичные модулю articles
   @Post('/comment')
   createComment(
     @Param('id') articleId: number,
     @Body() dto: CommentDTO,
   ): Promise<ResponseDTO> {
-    return this.commentService.createComment(dto, articleId);
+    return this.commentService.createComment({ articleId, ...dto });
   }
 
   @Get('/comments')
@@ -43,7 +42,7 @@ export class CommentController {
     @Body() dto: CommentDTO,
   ) {
     // { id: commentId, ...dto }
-    return this.commentService.createComment(dto, articleId, commentId);
+    return this.commentService.createComment({ articleId, commentId, ...dto });
   }
 
   @Delete('/comment/:comment_id')

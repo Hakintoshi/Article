@@ -37,4 +37,14 @@ export const actions = {
       console.error(e);
     }
   },
+  async create(store, payload) {
+    try {
+      await nestInstence.post(
+        `/article/${payload.articleId}/comment`,
+        payload.comment,
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  },
 };

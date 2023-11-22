@@ -17,94 +17,98 @@ exports.ArticleService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const article_model_1 = require("../../models/article.model");
-const index_1 = require("./const/index");
-const httpStatus_1 = require("../../const/httpStatus");
+const const_1 = require("./const");
 let ArticleService = ArticleService_1 = class ArticleService {
     constructor(articleRepository) {
         this.articleRepository = articleRepository;
         this.logger = new common_1.Logger(ArticleService_1.name);
     }
-    async createArticle(dto, articleId) {
+    async createArticle(dto) {
         try {
-            if (articleId) {
-                await this.articleRepository.update({ title: dto.title, body: dto.body }, { where: { article_id: articleId } });
+            const saveData = {
+                title: dto.title,
+                body: dto.body,
+            };
+            if (dto.id) {
+                await this.articleRepository.update(saveData, {
+                    returning: undefined,
+                    where: { article_id: dto.id },
+                });
                 return {
-                    message: index_1.message.SUCCESS_UPDATE_ARTICLE,
-                    status: httpStatus_1.HttpStatus.OK,
+                    message: const_1.message.SUCCESS_UPDATE_ARTICLE,
+                    status: common_1.HttpStatus.OK,
                     data: null,
                 };
             }
-            await this.articleRepository.create({
-                title: dto.title,
-                body: dto.body,
-            });
+            await this.articleRepository.create(saveData);
             return {
-                message: index_1.message.SUCCESS_CREATE_ARTICLE,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_CREATE_ARTICLE,
+                status: common_1.HttpStatus.CREATED,
                 data: null,
             };
         }
         catch (e) {
-            this.logger.error(`${index_1.message.ERROR_CREATE_ARTICLE} ${e}`);
-            throw new common_1.HttpException(`${index_1.message.ERROR_CREATE_ARTICLE} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(`${const_1.message.ERROR_CREATE_ARTICLE} ${e}`);
+            throw new common_1.HttpException(`${const_1.message.ERROR_CREATE_ARTICLE} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async getAllArticles() {
         try {
             const articles = await this.articleRepository.findAll();
             return {
-                message: index_1.message.SUCCESS_GET_ARTICLES,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_GET_ARTICLES,
+                status: common_1.HttpStatus.OK,
                 data: articles,
             };
         }
         catch (e) {
-            this.logger.error(index_1.message.ERROR_GET_ARTICLES);
-            throw new common_1.HttpException(`${index_1.message.ERROR_GET_ARTICLES} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(const_1.message.ERROR_GET_ARTICLES);
+            throw new common_1.HttpException(`${const_1.message.ERROR_GET_ARTICLES} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async getArticle(id) {
         try {
             const article = await this.articleRepository.findOne({
+                rejectOnEmpty: undefined,
                 where: { article_id: id },
             });
             if (!article) {
                 return {
-                    message: index_1.message.ARTICLE_NOT_FOUND,
-                    status: httpStatus_1.HttpStatus.NOT_FOUND,
+                    message: const_1.message.ARTICLE_NOT_FOUND,
+                    status: common_1.HttpStatus.NOT_FOUND,
                     data: null,
                 };
             }
             return {
-                message: index_1.message.SUCCESS_GET_ARTICLE,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_GET_ARTICLE,
+                status: common_1.HttpStatus.OK,
                 data: article,
             };
         }
         catch (e) {
-            this.logger.error(index_1.message.ERROR_GET_ARTICLE);
-            throw new common_1.HttpException(`${index_1.message.ERROR_GET_ARTICLE} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(const_1.message.ERROR_GET_ARTICLE);
+            throw new common_1.HttpException(`${const_1.message.ERROR_GET_ARTICLE} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async deleteArticle(id) {
         try {
             await this.articleRepository.destroy({ where: { article_id: id } });
             return {
-                message: index_1.message.SUCCESS_DELETE_ARTICLE,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_DELETE_ARTICLE,
+                status: common_1.HttpStatus.OK,
                 data: null,
             };
         }
         catch (e) {
-            this.logger.error(index_1.message.ERROR_DELETE_ARTICLE);
-            throw new common_1.HttpException(`${index_1.message.ERROR_DELETE_ARTICLE} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(const_1.message.ERROR_DELETE_ARTICLE);
+            throw new common_1.HttpException(`${const_1.message.ERROR_DELETE_ARTICLE} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
 };
 exports.ArticleService = ArticleService;
 exports.ArticleService = ArticleService = ArticleService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, sequelize_1.InjectModel)(article_model_1.article)),
+    __param(0, (0, sequelize_1.InjectModel)(article_model_1.Article)),
     __metadata("design:paramtypes", [Object])
 ], ArticleService);
 //# sourceMappingURL=article.service.js.map

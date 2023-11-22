@@ -9,31 +9,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.article = void 0;
+exports.Article = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const comment_model_1 = require("./comment.model");
-let article = class article extends sequelize_typescript_1.Model {
+let Article = class Article extends sequelize_typescript_1.Model {
 };
-exports.article = article;
+exports.Article = Article;
 __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.AutoIncrement,
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)
-], article.prototype, "article_id", void 0);
+], Article.prototype, "article_id", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.STRING,
+        comment: 'Заголовок статьи',
+    }),
     __metadata("design:type", String)
-], article.prototype, "title", void 0);
+], Article.prototype, "title", void 0);
 __decorate([
-    (0, sequelize_typescript_1.Column)(sequelize_typescript_1.DataType.TEXT),
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.TEXT,
+        comment: 'Текст статьи',
+    }),
     __metadata("design:type", String)
-], article.prototype, "body", void 0);
+], Article.prototype, "body", void 0);
 __decorate([
-    (0, sequelize_typescript_1.HasMany)(() => comment_model_1.article_comment),
+    (0, sequelize_typescript_1.HasMany)(() => comment_model_1.ArticleComment),
     __metadata("design:type", Array)
-], article.prototype, "comments", void 0);
-exports.article = article = __decorate([
-    sequelize_typescript_1.Table
-], article);
+], Article.prototype, "comments", void 0);
+exports.Article = Article = __decorate([
+    (0, sequelize_typescript_1.Table)({ tableName: 'article' })
+], Article);
 //# sourceMappingURL=article.model.js.map

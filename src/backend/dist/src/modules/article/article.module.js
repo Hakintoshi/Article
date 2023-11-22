@@ -17,7 +17,7 @@ let ArticleModule = class ArticleModule {
 exports.ArticleModule = ArticleModule;
 exports.ArticleModule = ArticleModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([article_model_1.article])],
+        imports: [sequelize_1.SequelizeModule.forFeature([article_model_1.Article])],
         providers: [article_service_1.ArticleService],
         controllers: [article_controller_1.ArticleController],
     })

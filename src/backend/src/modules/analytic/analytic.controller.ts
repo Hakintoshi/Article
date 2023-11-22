@@ -6,8 +6,6 @@ import { ResponseDTO } from '@/dto';
 export class AnalyticController {
   constructor(private readonly analyticService: AnalyticService) {}
   @Get()
-  // Вынести в отдельный модуль
-  // Использовать ResponseDTO
   getAnalytic(
     @Query('dateFrom') dateFrom: number,
     @Query('dateTo') dateTo: number,

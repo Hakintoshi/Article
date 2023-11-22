@@ -17,7 +17,7 @@ let AnalyticModule = class AnalyticModule {
 exports.AnalyticModule = AnalyticModule;
 exports.AnalyticModule = AnalyticModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([article_model_1.article])],
+        imports: [sequelize_1.SequelizeModule.forFeature([article_model_1.Article])],
         providers: [analytic_service_1.AnalyticService],
         controllers: [analytic_controller_1.AnalyticController],
     })

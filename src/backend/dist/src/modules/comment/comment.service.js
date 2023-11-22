@@ -17,36 +17,38 @@ exports.CommentService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const comment_model_1 = require("../../models/comment.model");
-const index_1 = require("./const/index");
-const httpStatus_1 = require("../../const/httpStatus");
+const const_1 = require("./const");
 let CommentService = CommentService_1 = class CommentService {
     constructor(commentRepository) {
         this.commentRepository = commentRepository;
         this.logger = new common_1.Logger(CommentService_1.name);
     }
-    async createComment(dto, articleId, commentId) {
+    async createComment(dto) {
         try {
-            if (commentId) {
-                await this.commentRepository.update({ text: dto.text }, { where: { articleId: articleId, comment_id: commentId } });
+            if (dto.commentId) {
+                await this.commentRepository.update({ text: dto.text }, {
+                    returning: undefined,
+                    where: { articleId: dto.articleId, comment_id: dto.commentId },
+                });
                 return {
-                    message: index_1.message.SUCCESS_UPDATE_COMMENT,
-                    status: httpStatus_1.HttpStatus.OK,
+                    message: const_1.message.SUCCESS_UPDATE_COMMENT,
+                    status: common_1.HttpStatus.OK,
                     data: null,
                 };
             }
             await this.commentRepository.create({
                 text: dto.text,
-                articleId: articleId,
+                articleId: dto.articleId,
             });
             return {
-                message: index_1.message.SUCCESS_CREATE_COMMENT,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_CREATE_COMMENT,
+                status: common_1.HttpStatus.CREATED,
                 data: null,
             };
         }
         catch (e) {
-            this.logger.error(index_1.message.ERROR_CREATE_COMMENT);
-            throw new common_1.HttpException(`${index_1.message.ERROR_CREATE_COMMENT} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(const_1.message.ERROR_CREATE_COMMENT);
+            throw new common_1.HttpException(`${const_1.message.ERROR_CREATE_COMMENT} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async getComments(id) {
@@ -56,37 +58,38 @@ let CommentService = CommentService_1 = class CommentService {
                 order: [['updatedAt', 'DESC']],
             });
             return {
-                message: index_1.message.SUCCESS_GET_COMMENTS,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_GET_COMMENTS,
+                status: common_1.HttpStatus.OK,
                 data: comments,
             };
         }
         catch (e) {
-            this.logger.error(index_1.message.ERROR_GET_COMMENTS);
-            throw new common_1.HttpException(`${index_1.message.ERROR_GET_COMMENTS} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(const_1.message.ERROR_GET_COMMENTS);
+            throw new common_1.HttpException(`${const_1.message.ERROR_GET_COMMENTS} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async getComment(articleId, commentId) {
         try {
             const comment = await this.commentRepository.findOne({
+                rejectOnEmpty: undefined,
                 where: { comment_id: commentId, articleId: articleId },
             });
             if (!comment) {
                 return {
-                    message: index_1.message.COMMENT_NOT_FOUND,
-                    status: httpStatus_1.HttpStatus.NOT_FOUND,
+                    message: const_1.message.COMMENT_NOT_FOUND,
+                    status: common_1.HttpStatus.NOT_FOUND,
                     data: null,
                 };
             }
             return {
-                message: index_1.message.SUCCESS_CREATE_COMMENT,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_CREATE_COMMENT,
+                status: common_1.HttpStatus.OK,
                 data: comment,
             };
         }
         catch (e) {
-            this.logger.error(index_1.message.ERROR_GET_COMMENT);
-            throw new common_1.HttpException(`${index_1.message.ERROR_GET_COMMENT} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(const_1.message.ERROR_GET_COMMENT);
+            throw new common_1.HttpException(`${const_1.message.ERROR_GET_COMMENT} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
     async deleteComment(articleId, commentId) {
@@ -95,21 +98,21 @@ let CommentService = CommentService_1 = class CommentService {
                 where: { articleId: articleId, comment_id: commentId },
             });
             return {
-                message: index_1.message.SUCCESS_DELETE_COMMENT,
-                status: httpStatus_1.HttpStatus.OK,
+                message: const_1.message.SUCCESS_DELETE_COMMENT,
+                status: common_1.HttpStatus.OK,
                 data: null,
             };
         }
         catch (e) {
-            this.logger.error(index_1.message.ERROR_DELETE_COMMENT);
-            throw new common_1.HttpException(`${index_1.message.ERROR_DELETE_COMMENT} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            this.logger.error(const_1.message.ERROR_DELETE_COMMENT);
+            throw new common_1.HttpException(`${const_1.message.ERROR_DELETE_COMMENT} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
 };
 exports.CommentService = CommentService;
 exports.CommentService = CommentService = CommentService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, sequelize_1.InjectModel)(comment_model_1.article_comment)),
+    __param(0, (0, sequelize_1.InjectModel)(comment_model_1.ArticleComment)),
     __metadata("design:paramtypes", [Object])
 ], CommentService);
 //# sourceMappingURL=comment.service.js.map

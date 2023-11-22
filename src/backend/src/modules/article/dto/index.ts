@@ -1,21 +1,12 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-class CreateArticleDTO {
-  // id?: number
+export class CreateArticleDTO {
+  id?: number;
+
+  @IsNotEmpty()
   @IsString()
   title: string;
 
+  @IsNotEmpty()
   @IsString()
   body: string;
 }
-
-class UpdateArticleDTO {
-  @IsString()
-  @IsNotEmpty()
-  title: string;
-
-  @IsString()
-  @IsNotEmpty()
-  body: string;
-}
-
-export { CreateArticleDTO, UpdateArticleDTO };

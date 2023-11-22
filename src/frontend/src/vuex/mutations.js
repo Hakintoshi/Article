@@ -7,4 +7,7 @@ export const mutations = {
     state.textMenuBtn = "Написать статью";
     state.path = "/article";
   },
+  SET_VALUE: (state, { field, value }) => {
+    state[field] = value;
+  },
 };

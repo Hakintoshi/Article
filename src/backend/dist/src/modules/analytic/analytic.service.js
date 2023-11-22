@@ -17,7 +17,6 @@ exports.AnalyticService = void 0;
 const common_1 = require("@nestjs/common");
 const sequelize_1 = require("@nestjs/sequelize");
 const comment_model_1 = require("../../models/comment.model");
-const httpStatus_1 = require("../../const/httpStatus");
 const sequelize_2 = require("sequelize");
 const article_model_1 = require("../../models/article.model");
 const const_1 = require("./const");
@@ -27,12 +26,10 @@ let AnalyticService = AnalyticService_1 = class AnalyticService {
         this.logger = new common_1.Logger(AnalyticService_1.name);
     }
     async getAnalytic(dateFrom, dateTo) {
-        console.log(dateFrom, dateTo);
-        console.log(new Date(+dateFrom), new Date(+dateTo));
         try {
             const comments = await this.articleRepository.findAll({
                 include: {
-                    model: comment_model_1.article_comment,
+                    model: comment_model_1.ArticleComment,
                     where: {
                         createdAt: {
                             [sequelize_2.Op.gte]: new Date(+dateFrom),
@@ -43,20 +40,20 @@ let AnalyticService = AnalyticService_1 = class AnalyticService {
             });
             return {
                 message: const_1.message.SUCCESS_GET_ANALYTIC,
-                status: httpStatus_1.HttpStatus.OK,
+                status: common_1.HttpStatus.OK,
                 data: comments,
             };
         }
         catch (e) {
             this.logger.error(const_1.message.ERROR_GET_ANALYTIC);
-            throw new common_1.HttpException(`${const_1.message.ERROR_GET_ANALYTIC} ${e}`, httpStatus_1.HttpStatus.BAD_REQUEST);
+            throw new common_1.HttpException(`${const_1.message.ERROR_GET_ANALYTIC} ${e}`, common_1.HttpStatus.BAD_REQUEST);
         }
     }
 };
 exports.AnalyticService = AnalyticService;
 exports.AnalyticService = AnalyticService = AnalyticService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, sequelize_1.InjectModel)(article_model_1.article)),
+    __param(0, (0, sequelize_1.InjectModel)(article_model_1.Article)),
     __metadata("design:paramtypes", [Object])
 ], AnalyticService);
 //# sourceMappingURL=analytic.service.js.map

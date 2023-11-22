@@ -10,7 +10,7 @@
       <PickerDate title="Дата от" @setDate="setDateFrom" />
       <PickerDate title="Дата до" @setDate="setDateTo" />
       <v-spacer />
-      <v-btn @click="getArticleComments"> Получить аналитику </v-btn>
+      <v-btn @click="getAnalytic"> Получить аналитику </v-btn>
     </div>
     <div v-if="sectionsNotEmpty" class="table-section mt-10">
       <div v-for="section in sections" :key="section.articleId" class="section">
@@ -35,8 +35,10 @@
 </template>
 
 <script>
-import nestInstence from "@/api/instences/instence";
 import PickerDate from "@/components/Analytic/PickerDate.vue";
+import { constants } from "@/const";
+import { formatDate } from "@/utils";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "AnalyticComment",
@@ -46,43 +48,28 @@ export default {
   data: () => ({
     dateTo: null,
     dateFrom: null,
-    sections: null,
   }),
   methods: {
+    ...mapActions(["getArticleComments"]),
     setDateFrom(date) {
       this.dateFrom = new Date(date).getTime();
     },
     setDateTo(date) {
-      // Вынос в константу
-      this.dateTo = new Date(date).getTime() + 86400000;
+      this.dateTo = new Date(date).getTime() + constants.ONE_DAY;
     },
-    async getArticleComments() {
-      try {
-        // В actions
-        if (!this.dateTo || !this.dateFrom) {
-          return;
-        }
-
-        const res = await nestInstence.get(
-          `/analytic/comments/?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}`,
-        );
-        if (res.data?.status === 200 && res.data?.data) {
-          this.sections = res.data.data;
-        }
-      } catch (e) {
-        console.error(e);
-      }
+    getAnalytic() {
+      const range = {
+        dateTo: this.dateTo,
+        dateFrom: this.dateFrom,
+      };
+      this.getArticleComments(range);
     },
-    // создать папочку utils/index.js этот метод вынести туда
-    formatDate(d) {
-      const date = new Date(d);
-      const day = date.getDate();
-      const month = date.getMonth();
-      const year = date.getFullYear();
-      return `${day}-${month}-${year}`;
-    },
+    formatDate,
   },
   computed: {
+    ...mapState({
+      sections: (state) => state.sections,
+    }),
     sectionsNotEmpty() {
       return this.sections?.length > 0;
     },

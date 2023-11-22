@@ -9,32 +9,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.article_comment = void 0;
+exports.ArticleComment = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const article_model_1 = require("./article.model");
-let article_comment = class article_comment extends sequelize_typescript_1.Model {
+let ArticleComment = class ArticleComment extends sequelize_typescript_1.Model {
 };
-exports.article_comment = article_comment;
+exports.ArticleComment = ArticleComment;
 __decorate([
     sequelize_typescript_1.PrimaryKey,
     sequelize_typescript_1.AutoIncrement,
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)
-], article_comment.prototype, "comment_id", void 0);
+], ArticleComment.prototype, "comment_id", void 0);
 __decorate([
-    sequelize_typescript_1.Column,
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.STRING,
+        comment: 'Тексе комментария',
+    }),
     __metadata("design:type", String)
-], article_comment.prototype, "text", void 0);
+], ArticleComment.prototype, "text", void 0);
 __decorate([
-    (0, sequelize_typescript_1.ForeignKey)(() => article_model_1.article),
-    sequelize_typescript_1.Column,
+    (0, sequelize_typescript_1.ForeignKey)(() => article_model_1.Article),
+    (0, sequelize_typescript_1.Column)({
+        comment: 'Ссылка на article',
+    }),
     __metadata("design:type", Number)
-], article_comment.prototype, "articleId", void 0);
+], ArticleComment.prototype, "articleId", void 0);
 __decorate([
-    (0, sequelize_typescript_1.BelongsTo)(() => article_model_1.article),
-    __metadata("design:type", article_model_1.article)
-], article_comment.prototype, "article", void 0);
-exports.article_comment = article_comment = __decorate([
-    sequelize_typescript_1.Table
-], article_comment);
+    (0, sequelize_typescript_1.BelongsTo)(() => article_model_1.Article),
+    __metadata("design:type", article_model_1.Article)
+], ArticleComment.prototype, "article", void 0);
+exports.ArticleComment = ArticleComment = __decorate([
+    (0, sequelize_typescript_1.Table)({ tableName: 'article_comment' })
+], ArticleComment);
 //# sourceMappingURL=comment.model.js.map

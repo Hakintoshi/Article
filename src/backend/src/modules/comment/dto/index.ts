@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CommentDTO {
-  // Добавить id комментария
-  // Добавить id статьи
-  // id?: number;
+  articleId?: number;
+
+  commentId?: number;
 
   @IsNotEmpty()
   @IsString()

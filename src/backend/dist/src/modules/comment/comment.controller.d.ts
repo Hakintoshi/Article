@@ -1,6 +1,6 @@
 import { CommentService } from './comment.service';
 import { CommentDTO } from './dto';
-import { ResponseDTO } from '@/dto/index';
+import { ResponseDTO } from '@/dto';
 export declare class CommentController {
     private readonly commentService;
     constructor(commentService: CommentService);

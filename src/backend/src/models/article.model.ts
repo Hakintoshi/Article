@@ -7,29 +7,27 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { article_comment } from '@/models/comment.model';
+import { ArticleComment } from '@/models/comment.model';
 
-@Table
-// исправить наименование таблиц
-export class article extends Model {
+@Table({ tableName: 'article' })
+export class Article extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
   article_id: number;
 
-  // Заголовок статьи
-  // Добавить комментарий
-  // @Column({
-  //   type: DataType.STRING,
-  //   comment: 'Текст комментария',
-  // })
-  @Column
+  @Column({
+    type: DataType.STRING,
+    comment: 'Заголовок статьи',
+  })
   title: string;
 
-  // Текст статьи
-  @Column(DataType.TEXT)
+  @Column({
+    type: DataType.TEXT,
+    comment: 'Текст статьи',
+  })
   body: string;
 
-  @HasMany(() => article_comment)
-  comments: article_comment[];
+  @HasMany(() => ArticleComment)
+  comments: ArticleComment[];
 }

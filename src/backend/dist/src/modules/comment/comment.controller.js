@@ -21,7 +21,7 @@ let CommentController = class CommentController {
         this.commentService = commentService;
     }
     createComment(articleId, dto) {
-        return this.commentService.createComment(dto, articleId);
+        return this.commentService.createComment({ articleId, ...dto });
     }
     getComments(id) {
         return this.commentService.getComments(id);
@@ -30,7 +30,7 @@ let CommentController = class CommentController {
         return this.commentService.getComment(articleId, commentId);
     }
     updateComment(commentId, articleId, dto) {
-        return this.commentService.createComment(dto, articleId, commentId);
+        return this.commentService.createComment({ articleId, commentId, ...dto });
     }
     deleteComment(commentId, articleId) {
         return this.commentService.deleteComment(articleId, commentId);

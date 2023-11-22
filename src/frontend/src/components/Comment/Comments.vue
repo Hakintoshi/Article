@@ -24,8 +24,8 @@
 <script>
 import ArealComment from "@/components/Comment/ArealComment.vue";
 import CommentDialog from "@/components/Comment/CommentDialog.vue";
-import nestInstence from "@/api/instences/instence";
 import { mapActions, mapGetters } from "vuex";
+import { constants } from "@/const";
 
 export default {
   name: "ArealComments",
@@ -40,20 +40,18 @@ export default {
     dialog: false,
   }),
   // На created
-  mounted() {
-    // mapActions
-    this.setComments(this.articleId);
+  async created() {
+    await this.setComments(this.articleId);
   },
   methods: {
-    ...mapActions("comment", ["setComments"]),
+    ...mapActions("comment", ["setComments", "create"]),
     async createComment(commentText) {
       try {
-        // Вынос в actions
         const comment = {
           text: commentText,
         };
-        await nestInstence.post(`/article/${this.articleId}/comment`, comment);
-        // Проверка на успех
+        await this.create({ articleId: this.articleId, comment });
+        this.$root.SnackBar.show({ message: constants.COMMENT_CREATE });
         await this.setComments(this.articleId);
       } catch (e) {
         console.error(e);

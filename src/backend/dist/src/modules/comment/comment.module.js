@@ -17,7 +17,7 @@ let CommentModule = class CommentModule {
 exports.CommentModule = CommentModule;
 exports.CommentModule = CommentModule = __decorate([
     (0, common_1.Module)({
-        imports: [sequelize_1.SequelizeModule.forFeature([comment_model_1.article_comment])],
+        imports: [sequelize_1.SequelizeModule.forFeature([comment_model_1.ArticleComment])],
         providers: [comment_service_1.CommentService],
         controllers: [comment_controller_1.CommentController],
     })

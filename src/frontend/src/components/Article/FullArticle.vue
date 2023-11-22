@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import nestInstence from "@/api/instences/instence";
 import ArticleDialog from "@/components/Article/ArticleDialog.vue";
 import Comments from "../Comment/Comments.vue";
 import { mapActions, mapState } from "vuex";
@@ -49,21 +48,19 @@ export default {
     await this.getArticle(this.$route.params.id);
   },
   methods: {
-    // try catch, actions
-    ...mapActions("article", ["getArticle"]),
+    ...mapActions("article", ["getArticle", "update"]),
     async updateArticle(articleData) {
-      try {
-        const article = {
-          title: articleData.title,
-          body: articleData.body,
-        };
-        await nestInstence.patch(`/article/${this.$route.params.id}`, article);
-        // проверка на удачный ответ;
-        // snackbar статья обновлена
-        await this.getArticle(this.$route.params.id);
-      } catch (e) {
-        console.error(e);
-      }
+      const article = {
+        title: articleData.title,
+        body: articleData.body,
+      };
+      const articleId = this.$route.params.id;
+      await this.update({
+        articleId: articleId,
+        article,
+      });
+      this.$root.SnackBar.show({ message: "Статья обновлена" });
+      await this.getArticle(articleId);
     },
   },
 };

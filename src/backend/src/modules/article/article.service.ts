@@ -1,41 +1,34 @@
 import { HttpException, Injectable, Logger, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { article } from '@/models/article.model';
-import { CreateArticleDTO, UpdateArticleDTO } from './dto';
+import { Article } from '@/models/article.model';
+import { CreateArticleDTO } from './dto';
 import { message } from '@/modules/article/const';
 import { ResponseDTO } from '@/dto';
 
 @Injectable()
 export class ArticleService {
   constructor(
-    @InjectModel(article) private articleRepository: typeof article,
+    @InjectModel(Article) private articleRepository: typeof Article,
   ) {}
 
   private readonly logger = new Logger(ArticleService.name);
 
-  // 1. использовать конструкцию try catch
-  // 2. использовать ResponseDTO
-  // 3. Использовать константы для кодов статусов и для сообщениях об ошибках и т.п.
   /**
-   * Создание или обновление статьи, при передаче параметра id будет выполнено обновление
+   * Создание или обновление статьи, при передаче id в dto будет выполнено обновление
    * @param dto
-   * @param articleId
    */
-  async createArticle(
-    dto: CreateArticleDTO | UpdateArticleDTO,
-    articleId?: number,
-  ): Promise<ResponseDTO> {
+  async createArticle(dto: CreateArticleDTO): Promise<ResponseDTO> {
     try {
       const saveData = {
         title: dto.title,
         body: dto.body,
       };
 
-      if (articleId) {
-        await this.articleRepository.update(
-            saveData,
-          { returning: undefined, where: { article_id: articleId } },
-        );
+      if (dto.id) {
+        await this.articleRepository.update(saveData, {
+          returning: undefined,
+          where: { article_id: dto.id },
+        });
         return {
           message: message.SUCCESS_UPDATE_ARTICLE,
           status: HttpStatus.OK,
@@ -47,8 +40,7 @@ export class ArticleService {
 
       return {
         message: message.SUCCESS_CREATE_ARTICLE,
-        // Заменить на created
-        status: HttpStatus.OK,
+        status: HttpStatus.CREATED,
         data: null,
       };
     } catch (e) {
@@ -58,7 +50,6 @@ export class ArticleService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
   }
 
   /**
@@ -81,7 +72,6 @@ export class ArticleService {
     }
   }
 
-  // Сделать для каждого метода
   /**
    * Получение статьи по его id.
    * @param id
@@ -90,7 +80,7 @@ export class ArticleService {
     try {
       const article = await this.articleRepository.findOne({
         rejectOnEmpty: undefined,
-        where: { article_id: id }
+        where: { article_id: id },
       });
 
       if (!article) {
@@ -114,8 +104,6 @@ export class ArticleService {
       );
     }
   }
-
-  // Перенести в метод createArticle
 
   /**
    * Удаление статьи

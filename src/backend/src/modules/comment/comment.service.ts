@@ -1,39 +1,32 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { article_comment } from '../../models/comment.model';
+import { ArticleComment } from '@/models/comment.model';
 import { CommentDTO } from './dto';
-import { ResponseDTO } from '@/dto/index';
-import { message } from '@/modules/comment/const/index';
-import { HttpStatus } from '@/const/httpStatus';
-// import { Op } from 'sequelize';
+import { ResponseDTO } from '@/dto';
+import { message } from '@/modules/comment/const';
 
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel(article_comment)
-    private commentRepository: typeof article_comment,
+    @InjectModel(ArticleComment)
+    private commentRepository: typeof ArticleComment,
   ) {}
 
   private readonly logger = new Logger(CommentService.name);
-  // Смотреть замечания в articles
 
   /**
    * Создание или обновление комментария, при передаче параметра commentId, комментарий будет обновлен
    * @param dto
-   * @param articleId
-   * @param commentId
    */
-  async createComment(
-    dto: CommentDTO,
-    articleId: number,
-    commentId?: number,
-  ): Promise<ResponseDTO> {
+  async createComment(dto: CommentDTO): Promise<ResponseDTO> {
     try {
-      // Поменять на HttpStatus из коробки
-      if (commentId) {
+      if (dto.commentId) {
         await this.commentRepository.update(
           { text: dto.text },
-          {returning: undefined, where: { articleId: articleId, comment_id: commentId } },
+          {
+            returning: undefined,
+            where: { articleId: dto.articleId, comment_id: dto.commentId },
+          },
         );
 
         return {
@@ -44,12 +37,12 @@ export class CommentService {
       }
       await this.commentRepository.create({
         text: dto.text,
-        articleId: articleId,
+        articleId: dto.articleId,
       });
 
       return {
         message: message.SUCCESS_CREATE_COMMENT,
-        status: HttpStatus.OK,
+        status: HttpStatus.CREATED,
         data: null,
       };
     } catch (e) {
@@ -95,7 +88,7 @@ export class CommentService {
     try {
       const comment = await this.commentRepository.findOne({
         rejectOnEmpty: undefined,
-        where: { comment_id: commentId, articleId: articleId }
+        where: { comment_id: commentId, articleId: articleId },
       });
 
       if (!comment) {
@@ -147,18 +140,4 @@ export class CommentService {
       );
     }
   }
-  // УДалить
-  // Вынести в модуль аналитики
-  // Сделать группировку по статьям здесь, используя includes в sequielze
-  // async getAnalytic(dateFrom: number, dateTo: number): Promise<Comment[]> {
-  //   const comments = await this.commentRepository.findAll({
-  //     where: {
-  //       createdAt: {
-  //         [Op.gte]: new Date(+dateFrom),
-  //         [Op.lte]: new Date(+dateTo),
-  //       },
-  //     },
-  //   });
-  //   return comments;
-  // }
 }

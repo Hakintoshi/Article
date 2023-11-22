@@ -1,9 +1,5 @@
-declare class CreateArticleDTO {
+export declare class CreateArticleDTO {
+    id?: number;
     title: string;
     body: string;
 }
-declare class UpdateArticleDTO {
-    title: string;
-    body: string;
-}
-export { CreateArticleDTO, UpdateArticleDTO };

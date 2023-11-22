@@ -8,7 +8,9 @@ async function bootstrap() {
     app.setGlobalPrefix('api/v1');
     app.enableCors();
     const port = +process.env.API_PORT;
-    app.useGlobalPipes(new common_1.ValidationPipe());
+    app.useGlobalPipes(new common_1.ValidationPipe({
+        errorHttpStatusCode: common_1.HttpStatus.BAD_REQUEST,
+    }));
     await app.listen(port, () => {
         console.log(`app start on port ${port}`);
     });

@@ -24,7 +24,7 @@
 
 <script>
 import ArealArticle from "@/components/Article/ArealArticle.vue";
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 
 export default {
   name: "ArealArticles",
@@ -34,6 +34,7 @@ export default {
   data: () => ({}),
   methods: {
     ...mapActions("article", ["setArticles"]),
+    ...mapMutations(["CHANGE_ON_CREATE_ARTICLE"]),
   },
   computed: {
     ...mapGetters("article", ["ARTICLES"]),
@@ -42,12 +43,10 @@ export default {
       return this.ARTICLES?.length > 0;
     },
   },
-  // Поменять где возможно на created
   async created() {
     await this.setArticles();
     if (this.$router.currentRoute.fullPath === "/articles") {
-      // mapMutations
-      this.$store.commit("CHANGE_ON_CREATE_ARTICLE");
+      this.CHANGE_ON_CREATE_ARTICLE();
     }
   },
 };

@@ -2,29 +2,33 @@ import {
   AutoIncrement,
   BelongsTo,
   Column,
+  DataType,
   ForeignKey,
   Model,
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { article } from '@/models/article.model';
+import { Article } from '@/models/article.model';
 
-@Table
-// Поправить аналагично модели в ARTICLES...
-export class article_comment extends Model {
+@Table({ tableName: 'article_comment' })
+export class ArticleComment extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column
   comment_id: number;
 
-  // Текст комментария
-  @Column
+  @Column({
+    type: DataType.STRING,
+    comment: 'Тексе комментария',
+  })
   text: string;
 
-  @ForeignKey(() => article)
-  @Column
+  @ForeignKey(() => Article)
+  @Column({
+    comment: 'Ссылка на article',
+  })
   articleId: number;
 
-  @BelongsTo(() => article)
-  article: article;
+  @BelongsTo(() => Article)
+  article: Article;
 }
