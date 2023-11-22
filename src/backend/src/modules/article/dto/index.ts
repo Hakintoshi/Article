@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 class CreateArticleDTO {
+  // id?: number
   @IsString()
   title: string;
 

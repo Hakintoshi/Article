@@ -10,7 +10,7 @@ import {
 import { article } from '@/models/article.model';
 
 @Table
-// Поправить аналагично модели в ARTICLES
+// Поправить аналагично модели в ARTICLES...
 export class article_comment extends Model {
   @PrimaryKey
   @AutoIncrement

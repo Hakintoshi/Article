@@ -1,5 +1,4 @@
 export const getters = {
-  COMMENTS: (state) => {
-    return state.comments;
-  },
+  // Исправить наименование
+  COMMENTS: (state) => state.comments,
 };

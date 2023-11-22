@@ -39,6 +39,7 @@ export default {
   data: () => ({
     dialog: false,
   }),
+  // На created
   mounted() {
     // mapActions
     this.setComments(this.articleId);
@@ -47,10 +48,12 @@ export default {
     ...mapActions("comment", ["setComments"]),
     async createComment(commentText) {
       try {
+        // Вынос в actions
         const comment = {
           text: commentText,
         };
         await nestInstence.post(`/article/${this.articleId}/comment`, comment);
+        // Проверка на успех
         await this.setComments(this.articleId);
       } catch (e) {
         console.error(e);

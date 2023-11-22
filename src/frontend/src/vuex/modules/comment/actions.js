@@ -1,11 +1,12 @@
 import nestInstence from "@/api/instences/instence";
 
 export const actions = {
-  async setComments({ commit }, articleId) {
+  // Переименовать
+  async setComments(store, articleId) {
     try {
       const res = await nestInstence.get(`/article/${articleId}/comments`);
       if (res.data?.status === 200 && res.data?.data) {
-        commit("SET_VALUE", { field: "comments", value: res.data.data });
+        store.commit("SET_VALUE", { field: "comments", value: res.data.data });
       }
     } catch (e) {
       console.error(e);
@@ -31,6 +32,7 @@ export const actions = {
       await nestInstence.delete(
         `/article/${payload.articleId}/comment/${payload.commentId}`,
       );
+      // Для крастоты snackbars
     } catch (e) {
       console.error(e);
     }

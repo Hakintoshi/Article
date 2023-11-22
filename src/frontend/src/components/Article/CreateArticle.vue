@@ -12,7 +12,7 @@
           <label
             >Введите заголовк статьи
             <v-text-field
-              :value="this.articleTitle"
+              :value="articleTitle"
               @input="updateTitleArticle"
               placeholder="Не меньше 4 символов"
               full-width
@@ -25,7 +25,7 @@
           <label
             >Введите текст статьи
             <v-textarea
-              :value="this.articleBody"
+              :value="articleBody"
               @input="updateBodyArticle"
               placeholder="Не меньше 10 символов"
               solo
@@ -75,6 +75,7 @@ export default {
     }),
 
     btnDisabled() {
+      // числовые значения тоже выносятся в константы
       return (
         this.articleTitle.trim().length < 4 ||
         this.articleBody.trim().length < 10
@@ -89,12 +90,13 @@ export default {
   },
   mounted() {
     if (this.$router.currentRoute.fullPath === "/article") {
-      this.$store.commit("CHANGE_ON_ARTICLES");
+      this.CHANGE_ON_ARTICLES();
     }
   },
   methods: {
     ...mapActions("article", ["updateTitle", "updateBody"]),
     ...mapMutations("article", ["CLEAR_ARTICLE_FIELDS"]),
+    ...mapMutations(["CHANGE_ON_ARTICLES", "CHANGE_ON_CREATE_ARTICLE"]),
     updateTitleArticle(e) {
       this.updateTitle(e);
     },
@@ -107,14 +109,17 @@ export default {
         this.articleTitle.trim();
         this.articleBody.trim();
         // this.articleFormData поместить в state
-        // вынести в action
+        // вынести в action!!!
         // вызывать с помощью mapActions
-        await nestInstence.post("/article", this.articleData);
+        const res = await nestInstence.post("/article", this.articleData);
+        // Сделать проверку по ответу
+        // if (res) {
         this.CLEAR_ARTICLE_FIELDS();
         // лишнее убрать это делать по мере прихода ответа
-        await this.$router.push("/articles");
-        this.$store.commit("CHANGE_ON_CREATE_ARTICLE");
+        this.$router.push("/articles");
+        this.CHANGE_ON_CREATE_ARTICLE();
         this.errorTitle = false;
+        // Сообщения вынести в константы
         this.$root.SnackBar.show({ message: "Статья создана" });
       } catch (e) {
         this.$root.SnackBar.show({
@@ -131,6 +136,7 @@ export default {
     send() {
       const titleLen = this.articleTitle.trim().length;
       const bodyLen = this.articleBody.trim().length;
+      // Вынести числа в константы
       if (titleLen < 4 || bodyLen < 10) {
         this.errorTitle = true;
         return;

@@ -24,6 +24,7 @@ export class AnalyticService {
    * @param dateTo
    */
   async getAnalytic(dateFrom: number, dateTo: number): Promise<ResponseDTO> {
+    //Убрать логи
     console.log(dateFrom, dateTo);
     console.log(new Date(+dateFrom), new Date(+dateTo));
     try {
@@ -38,6 +39,7 @@ export class AnalyticService {
           },
         },
       });
+
       return {
         message: message.SUCCESS_GET_ANALYTIC,
         status: HttpStatus.OK,

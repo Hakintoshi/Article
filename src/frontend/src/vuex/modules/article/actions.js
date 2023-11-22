@@ -1,6 +1,7 @@
 import nestInstence from "@/api/instences/instence";
 
 export const actions = {
+  // Переименовать метод
   async setArticles({ commit }) {
     try {
       const res = await nestInstence.get(`/articles`);
@@ -19,6 +20,7 @@ export const actions = {
   },
   async getArticle({ commit }, articleId) {
     try {
+      // Вынести запрос в переменную
       const article = (await nestInstence.get(`/article/${articleId}`)).data;
       commit("SET_VALUE", { field: "article", value: article.data });
     } catch (e) {

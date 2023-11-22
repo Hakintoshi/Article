@@ -29,10 +29,11 @@ export class CommentService {
     commentId?: number,
   ): Promise<ResponseDTO> {
     try {
+      // Поменять на HttpStatus из коробки
       if (commentId) {
         await this.commentRepository.update(
           { text: dto.text },
-          { where: { articleId: articleId, comment_id: commentId } },
+          {returning: undefined, where: { articleId: articleId, comment_id: commentId } },
         );
 
         return {
@@ -93,7 +94,8 @@ export class CommentService {
   async getComment(articleId: number, commentId: number): Promise<ResponseDTO> {
     try {
       const comment = await this.commentRepository.findOne({
-        where: { comment_id: commentId, articleId: articleId },
+        rejectOnEmpty: undefined,
+        where: { comment_id: commentId, articleId: articleId }
       });
 
       if (!comment) {
@@ -145,7 +147,7 @@ export class CommentService {
       );
     }
   }
-
+  // УДалить
   // Вынести в модуль аналитики
   // Сделать группировку по статьям здесь, используя includes в sequielze
   // async getAnalytic(dateFrom: number, dateTo: number): Promise<Comment[]> {
