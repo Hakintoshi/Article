@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDTO, UpdateArticleDTO } from './dto';
-import { ResponseDTO } from '@/dto/index';
+import { ResponseDTO } from '@/dto';
 
 @Controller()
 export class ArticleController {
@@ -24,18 +24,19 @@ export class ArticleController {
 
   @Get('articles')
   // Использовать другой DTO для ответа
-  findAllArticles(): Promise<ResponseDTO> {
+  getArticles(): Promise<ResponseDTO> {
     return this.articleService.getAllArticles();
   }
 
   @Get('article/:id')
-  findOneArticle(@Param('id') id: number): Promise<ResponseDTO> {
+  getArticle(@Param('id') id: number): Promise<ResponseDTO> {
     return this.articleService.getArticle(id);
   }
 
   @Patch('article/:id')
   updateArticle(
     @Param('id') id: number,
+    // Поменять на CreateArticleDTO
     @Body() dto: UpdateArticleDTO,
   ): Promise<ResponseDTO> {
     return this.articleService.createArticle(dto, id);

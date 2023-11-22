@@ -1,10 +1,9 @@
-import { HttpException, Injectable, Logger } from '@nestjs/common';
+import { HttpException, Injectable, Logger, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { article } from '@/models/article.model';
 import { CreateArticleDTO, UpdateArticleDTO } from './dto';
-import { message } from '@/modules/article/const/index';
-import { ResponseDTO } from '@/dto/index';
-import { HttpStatus } from '@/const/httpStatus';
+import { message } from '@/modules/article/const';
+import { ResponseDTO } from '@/dto';
 
 @Injectable()
 export class ArticleService {
@@ -27,10 +26,15 @@ export class ArticleService {
     articleId?: number,
   ): Promise<ResponseDTO> {
     try {
+      const saveData = {
+        title: dto.title,
+        body: dto.body,
+      };
+
       if (articleId) {
         await this.articleRepository.update(
-          { title: dto.title, body: dto.body },
-          { where: { article_id: articleId } },
+            saveData,
+          { returning: undefined, where: { article_id: articleId } },
         );
         return {
           message: message.SUCCESS_UPDATE_ARTICLE,
@@ -39,13 +43,11 @@ export class ArticleService {
         };
       }
 
-      await this.articleRepository.create({
-        title: dto.title,
-        body: dto.body,
-      });
+      await this.articleRepository.create(saveData);
 
       return {
         message: message.SUCCESS_CREATE_ARTICLE,
+        // Заменить на created
         status: HttpStatus.OK,
         data: null,
       };
@@ -86,7 +88,8 @@ export class ArticleService {
   async getArticle(id: number): Promise<ResponseDTO> {
     try {
       const article = await this.articleRepository.findOne({
-        where: { article_id: id },
+        rejectOnEmpty: undefined,
+        where: { article_id: id }
       });
 
       if (!article) {

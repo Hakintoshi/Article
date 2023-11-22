@@ -36,10 +36,12 @@ export default {
     },
     async deleteArticle(id) {
       // использовать async await
-      await nestInstence.delete(`/article/${id}`);
+      const res = await nestInstence.delete(`/article/${id}`);
+      // Добавить проверку
+      // if res
+      this.$root.SnackBar.show({ message: "Статья удалена" });
       // Поменять на запрос
       await this.setArticles();
-      this.$root.SnackBar.show({ message: "Статья удалена" });
     },
   },
 };

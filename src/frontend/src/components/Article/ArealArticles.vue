@@ -10,7 +10,7 @@
     </div>
     <template v-if="articlesIsNotEmpty">
       <ArealArticle
-        v-for="article in this.ARTICLES"
+        v-for="article in ARTICLES"
         :id="article.article_id"
         :key="article.article_id"
         :title="article.title"
@@ -42,9 +42,11 @@ export default {
       return this.ARTICLES?.length > 0;
     },
   },
-  mounted() {
-    this.setArticles();
+  // Поменять где возможно на created
+  async created() {
+    await this.setArticles();
     if (this.$router.currentRoute.fullPath === "/articles") {
+      // mapMutations
       this.$store.commit("CHANGE_ON_CREATE_ARTICLE");
     }
   },

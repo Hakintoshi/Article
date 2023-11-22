@@ -10,6 +10,7 @@ import {
 import { article_comment } from '@/models/comment.model';
 
 @Table
+// исправить наименование таблиц
 export class article extends Model {
   @PrimaryKey
   @AutoIncrement
@@ -17,6 +18,11 @@ export class article extends Model {
   article_id: number;
 
   // Заголовок статьи
+  // Добавить комментарий
+  // @Column({
+  //   type: DataType.STRING,
+  //   comment: 'Текст комментария',
+  // })
   @Column
   title: string;
 

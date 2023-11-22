@@ -53,11 +53,16 @@ export default {
       this.dateFrom = new Date(date).getTime();
     },
     setDateTo(date) {
+      // Вынос в константу
       this.dateTo = new Date(date).getTime() + 86400000;
     },
     async getArticleComments() {
       try {
-        if (!this.dateTo || !this.dateFrom) return;
+        // В actions
+        if (!this.dateTo || !this.dateFrom) {
+          return;
+        }
+
         const res = await nestInstence.get(
           `/analytic/comments/?dateFrom=${this.dateFrom}&dateTo=${this.dateTo}`,
         );
@@ -68,6 +73,7 @@ export default {
         console.error(e);
       }
     },
+    // создать папочку utils/index.js этот метод вынести туда
     formatDate(d) {
       const date = new Date(d);
       const day = date.getDate();

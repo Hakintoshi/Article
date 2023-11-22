@@ -42,6 +42,7 @@ export class CommentController {
     @Param('id') articleId: number,
     @Body() dto: CommentDTO,
   ) {
+    // { id: commentId, ...dto }
     return this.commentService.createComment(dto, articleId, commentId);
   }
 

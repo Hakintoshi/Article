@@ -40,8 +40,13 @@ export default {
   data: () => ({
     dialog: false,
   }),
-  mounted() {
-    this.getArticle(this.$route.params.id);
+  computed: {
+    ...mapState("article", {
+      article: (state) => state.article,
+    }),
+  },
+  async created() {
+    await this.getArticle(this.$route.params.id);
   },
   methods: {
     // try catch, actions
@@ -53,16 +58,13 @@ export default {
           body: articleData.body,
         };
         await nestInstence.patch(`/article/${this.$route.params.id}`, article);
+        // проверка на удачный ответ;
+        // snackbar статья обновлена
         await this.getArticle(this.$route.params.id);
       } catch (e) {
         console.error(e);
       }
     },
-  },
-  computed: {
-    ...mapState("article", {
-      article: (state) => state.article,
-    }),
   },
 };
 </script>
