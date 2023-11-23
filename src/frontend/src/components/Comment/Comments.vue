@@ -2,13 +2,13 @@
   <div class="comments my-4 py-6 px-8">
     <h4 class="text-h4 d-flex justify-center mb-6">Комментарии</h4>
     <div class="btn-add">
-      <CommentDialog @sendComment="createComment">
+      <CommentDialog @sendComment="create">
         Добавить комментарий
       </CommentDialog>
     </div>
     <template v-if="commentsIsNotEmpty">
       <ArealComment
-        v-for="comment in COMMENTS"
+        v-for="comment in comments"
         :id="comment.comment_id"
         :key="comment.comment_id"
         :text="comment.text"
@@ -39,29 +39,34 @@ export default {
   data: () => ({
     dialog: false,
   }),
-  // На created
   async created() {
-    await this.setComments(this.articleId);
+    await this.getComments(this.articleId);
   },
   methods: {
-    ...mapActions("comment", ["setComments", "create"]),
-    async createComment(commentText) {
-      try {
-        const comment = {
-          text: commentText,
-        };
-        await this.create({ articleId: this.articleId, comment });
+    ...mapActions("comment", ["getComments", "createComment"]),
+    async create(commentText) {
+      const comment = {
+        text: commentText,
+      };
+      const status = await this.createComment({
+        articleId: this.articleId,
+        comment,
+      });
+      if (status) {
         this.$root.SnackBar.show({ message: constants.COMMENT_CREATE });
-        await this.setComments(this.articleId);
-      } catch (e) {
-        console.error(e);
+        await this.getComments(this.articleId);
+      } else {
+        this.$root.SnackBar.show({
+          message: constants.COMMENT_CREATE_ERROR,
+          color: "red",
+        });
       }
     },
   },
   computed: {
-    ...mapGetters("comment", ["COMMENTS"]),
+    ...mapGetters("comment", ["comments"]),
     commentsIsNotEmpty() {
-      return this.COMMENTS?.length > 0;
+      return this.comments?.length > 0;
     },
   },
 };

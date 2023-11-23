@@ -40,16 +40,33 @@ export default {
     },
   },
   methods: {
-    ...mapActions("comment", ["setComments", "updateComment", "deleteComment"]),
+    ...mapActions("comment", ["getComments", "updateComment", "deleteComment"]),
     async remove() {
-      await this.deleteComment(this.idForUrl);
-      this.$root.SnackBar.show({ message: constants.COMMENT_DELETE });
-      await this.setComments(this.articleId);
+      const status = await this.deleteComment(this.idForUrl);
+      if (status) {
+        this.$root.SnackBar.show({ message: constants.COMMENT_DELETE });
+        await this.getComments(this.articleId);
+      } else {
+        this.$root.SnackBar.show({
+          message: constants.COMMENT_DELETE_ERROR,
+          color: "red",
+        });
+      }
     },
     async update(commentText) {
-      await this.updateComment({ commentText, ...this.idForUrl });
-      this.$root.SnackBar.show({ message: constants.COMMENT_UPDATE });
-      await this.setComments(this.articleId);
+      const status = await this.updateComment({
+        commentText,
+        ...this.idForUrl,
+      });
+      if (status) {
+        this.$root.SnackBar.show({ message: constants.COMMENT_UPDATE });
+        await this.getComments(this.articleId);
+      } else {
+        this.$root.SnackBar.show({
+          message: constants.COMMENT_UPDATE_ERROR,
+          color: "red",
+        });
+      }
     },
   },
 };

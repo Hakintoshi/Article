@@ -1,8 +1,7 @@
 import nestInstence from "@/api/instences/instence";
 
 export const actions = {
-  // Переименовать
-  async setComments(store, articleId) {
+  async getComments(store, articleId) {
     try {
       const res = await nestInstence.get(`/article/${articleId}/comments`);
       if (res.data?.status === 200 && res.data?.data) {
@@ -18,31 +17,38 @@ export const actions = {
       const comment = {
         text: commentText,
       };
-      // запрос, вынос в actions
-      await nestInstence.patch(
+      const res = await nestInstence.patch(
         `/article/${articleId}/comment/${commentId}`,
         comment,
       );
+      if (res.data?.status === 200) {
+        return res.data.status;
+      }
     } catch (e) {
       console.error(e);
     }
   },
   async deleteComment(store, payload) {
     try {
-      await nestInstence.delete(
+      const res = await nestInstence.delete(
         `/article/${payload.articleId}/comment/${payload.commentId}`,
       );
-      // Для крастоты snackbars
+      if (res.data?.status === 200) {
+        return res.data.status;
+      }
     } catch (e) {
       console.error(e);
     }
   },
-  async create(store, payload) {
+  async createComment(store, payload) {
     try {
-      await nestInstence.post(
+      const res = await nestInstence.post(
         `/article/${payload.articleId}/comment`,
         payload.comment,
       );
+      if (res.data?.status === 201) {
+        return res.data.status;
+      }
     } catch (e) {
       console.error(e);
     }

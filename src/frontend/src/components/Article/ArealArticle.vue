@@ -19,6 +19,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { constants } from "@/const";
 
 export default {
   name: "ArialArticle",
@@ -28,14 +29,21 @@ export default {
   },
   data: () => ({}),
   methods: {
-    ...mapActions("article", ["setArticles", "removeArticle"]),
+    ...mapActions("article", ["getArticles", "removeArticle"]),
     onArticle(id) {
       this.$router.push(`/article/${id}`);
     },
     async deleteArticle(id) {
-      await this.removeArticle(id);
-      this.$root.SnackBar.show({ message: "Статья удалена" });
-      await this.setArticles();
+      const status = await this.removeArticle(id);
+      if (status) {
+        this.$root.SnackBar.show({ message: constants.ARTICLE_DELETE });
+        await this.getArticles();
+      } else {
+        this.$root.SnackBar.show({
+          message: constants.ARTICLE_DELETE_ERROR,
+          color: "red",
+        });
+      }
     },
   },
 };

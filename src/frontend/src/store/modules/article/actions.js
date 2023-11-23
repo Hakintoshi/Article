@@ -1,8 +1,7 @@
 import nestInstence from "@/api/instences/instence";
 
 export const actions = {
-  // Переименовать метод
-  async setArticles({ commit }) {
+  async getArticles({ commit }) {
     try {
       const res = await nestInstence.get(`/articles`);
       if (res.data?.status === 200 && res.data?.data) {
@@ -28,26 +27,35 @@ export const actions = {
       console.error(e);
     }
   },
-  async update(store, payload) {
+  async updateArticle(store, payload) {
     try {
-      await nestInstence.patch(
+      const res = await nestInstence.patch(
         `/article/${payload.articleId}`,
         payload.article,
       );
+      if (res.data?.status === 200) {
+        return res.data.status;
+      }
     } catch (e) {
       console.error(e);
     }
   },
   async removeArticle(store, articleId) {
     try {
-      await nestInstence.delete(`/article/${articleId}`);
+      const res = await nestInstence.delete(`/article/${articleId}`);
+      if (res.data?.status === 200) {
+        return res.data.status;
+      }
     } catch (e) {
       console.error(e);
     }
   },
-  async create(store, articleData) {
+  async createArticle(store, articleData) {
     try {
-      await nestInstence.post("/article", articleData);
+      const res = await nestInstence.post("/article", articleData);
+      if (res.data?.status === 201) {
+        return res.data.status;
+      }
     } catch (e) {
       console.error(e);
     }

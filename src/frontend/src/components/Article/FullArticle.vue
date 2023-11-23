@@ -15,7 +15,7 @@
         <ArticleDialog
           :title="article.title"
           :body="article.body"
-          @updateArticleData="updateArticle"
+          @updateArticleData="update"
         >
           Изменить статью
         </ArticleDialog>
@@ -29,6 +29,7 @@
 import ArticleDialog from "@/components/Article/ArticleDialog.vue";
 import Comments from "../Comment/Comments.vue";
 import { mapActions, mapState } from "vuex";
+import { constants } from "@/const";
 
 export default {
   name: "FullArticle",
@@ -48,19 +49,26 @@ export default {
     await this.getArticle(this.$route.params.id);
   },
   methods: {
-    ...mapActions("article", ["getArticle", "update"]),
-    async updateArticle(articleData) {
+    ...mapActions("article", ["getArticle", "updateArticle"]),
+    async update(articleData) {
       const article = {
         title: articleData.title,
         body: articleData.body,
       };
       const articleId = this.$route.params.id;
-      await this.update({
+      const status = await this.updateArticle({
         articleId: articleId,
         article,
       });
-      this.$root.SnackBar.show({ message: "Статья обновлена" });
-      await this.getArticle(articleId);
+      if (status) {
+        this.$root.SnackBar.show({ message: constants.ARTICLE_UPDATE });
+        await this.getArticle(articleId);
+      } else {
+        this.$root.SnackBar.show({
+          message: constants.ARTICLE_UPDATE_ERROR,
+          color: "red",
+        });
+      }
     },
   },
 };

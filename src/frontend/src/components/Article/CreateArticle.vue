@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-center mt-8">
-      <v-form class="form py-4 px-7" @submit.prevent="createArticle()">
+      <v-form class="form py-4 px-7" @submit.prevent="create">
         <h5 class="text-h5 d-flex justify-center">
           Форма для написания статьи
         </h5>
@@ -89,7 +89,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("article", ["updateTitle", "updateBody", "create"]),
+    ...mapActions("article", ["updateTitle", "updateBody", "createArticle"]),
     ...mapMutations("article", ["CLEAR_ARTICLE_FIELDS"]),
     ...mapMutations(["CHANGE_ON_ARTICLES", "CHANGE_ON_CREATE_ARTICLE"]),
     updateTitleArticle(e) {
@@ -99,22 +99,22 @@ export default {
       this.updateBody(e);
     },
 
-    async createArticle() {
-      try {
-        this.articleTitle.trim();
-        this.articleBody.trim();
-        await this.create(this.articleData);
-        this.CLEAR_ARTICLE_FIELDS();
-        this.$router.push("/articles");
-        this.CHANGE_ON_CREATE_ARTICLE();
-        this.errorTitle = false;
+    async create() {
+      this.articleTitle.trim();
+      this.articleBody.trim();
+      const status = await this.createArticle(this.articleData);
+      if (status) {
         this.$root.SnackBar.show({ message: constants.ARTICLE_CREATE });
-      } catch (e) {
+      } else {
         this.$root.SnackBar.show({
           message: constants.ARTICLE_CREATE_ERROR,
           color: "red",
         });
       }
+      this.CLEAR_ARTICLE_FIELDS();
+      this.errorTitle = false;
+      this.$router.push("/articles");
+      this.CHANGE_ON_CREATE_ARTICLE();
     },
     close() {
       this.CLEAR_ARTICLE_FIELDS();
@@ -123,7 +123,6 @@ export default {
     send() {
       const titleLen = this.articleTitle.trim().length;
       const bodyLen = this.articleBody.trim().length;
-      // Вынести числа в константы
       if (
         titleLen < constants.MIN_LENGTH_ARTICLE_TITLE ||
         bodyLen < constants.MIN_LENGTH_ARTICLE_BODY
